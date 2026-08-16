@@ -1,8 +1,9 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Fofoca da Minha Rua</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,6 +45,7 @@
             overflow-x: hidden;
             line-height: 1.5;
             position: relative;
+            touch-action: pan-y pinch-zoom; /* permite apenas rolagem vertical, desabilita pinça */
         }
 
         /* ===== LIQUID GLASS BACKGROUND ===== */
@@ -230,16 +232,6 @@
                 opacity: 1;
             }
         }
-        @keyframes ondaGotas {
-            0% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0.6;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(2.5);
-                opacity: 0;
-            }
-        }
 
         .animar-pulsar {
             animation: pulsar 1.8s ease-in-out infinite;
@@ -308,10 +300,10 @@
             padding: 0 20px;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER (sem padding inferior, colado com stories) ===== */
         .header {
-            padding: 12px 0 10px;
-            border-bottom: 2px solid rgba(255, 212, 0, 0.3);
+            padding: 8px 0 0;
+            border-bottom: none;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -326,22 +318,22 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             text-decoration: none;
             cursor: pointer;
             flex-shrink: 0;
         }
 
         .logo-imagem {
-            height: 48px;
+            height: 44px;
             width: auto;
-            max-width: 180px;
+            max-width: 160px;
             object-fit: contain;
             filter: drop-shadow(0 4px 12px rgba(255, 45, 149, 0.3));
             transition: all var(--transicao);
@@ -352,47 +344,22 @@
             filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.4));
         }
 
-        .logo-texto {
-            font-weight: 800;
-            font-size: 1.3rem;
-            line-height: 1.1;
-            color: var(--branco);
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-        .logo-texto .rosa {
-            color: var(--rosa);
-        }
-        .logo-texto .amarelo {
-            color: var(--amarelo);
-        }
-        .logo-texto .roxo {
-            color: var(--roxo-claro);
-        }
-        .logo-texto small {
-            display: block;
-            font-size: 0.6rem;
-            letter-spacing: 2px;
-            color: var(--amarelo);
-            font-weight: 400;
-        }
-
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 18px;
+            gap: 6px;
+            padding: 6px 14px;
             border-radius: 60px;
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             border: 2px solid transparent;
             cursor: pointer;
             transition: all var(--transicao);
@@ -453,23 +420,23 @@
         }
 
         .btn-pequeno {
-            padding: 6px 14px;
-            font-size: 0.7rem;
+            padding: 4px 10px;
+            font-size: 0.65rem;
         }
 
-        /* ===== STORIES ===== */
+        /* ===== STORIES (colado com header, top dinâmico via JS) ===== */
         .stories {
-            padding: 12px 0 10px;
-            border-bottom: 1px solid rgba(111, 45, 168, 0.3);
+            padding: 4px 0 6px;
+            border-bottom: 1px solid rgba(111, 45, 168, 0.2);
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
             position: sticky;
-            top: 74px;
             z-index: 90;
             background: rgba(17, 17, 17, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            /* top será definido via JS para ficar colado ao header */
         }
         .stories::-webkit-scrollbar {
             display: none;
@@ -477,7 +444,7 @@
 
         .stories-inner {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             padding: 0 20px;
             max-width: 1200px;
             margin: 0 auto;
@@ -487,12 +454,12 @@
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 2px;
             cursor: pointer;
             transition: all var(--transicao);
             flex-shrink: 0;
-            padding: 4px 14px;
-            border-radius: 20px;
+            padding: 3px 10px;
+            border-radius: 16px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid transparent;
         }
@@ -502,12 +469,12 @@
             background: rgba(255, 212, 0, 0.08);
         }
         .story-item .icone {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             line-height: 1;
             filter: drop-shadow(0 2px 8px rgba(255, 45, 149, 0.2));
         }
         .story-item .nome {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 600;
             color: var(--branco);
             text-transform: uppercase;
@@ -520,7 +487,7 @@
 
         /* ===== BIO ===== */
         .bio-section {
-            padding: 28px 20px;
+            padding: 20px 20px 18px;
             border-bottom: 1px solid rgba(255, 212, 0, 0.15);
             text-align: center;
             position: relative;
@@ -549,7 +516,7 @@
         }
 
         .bio-section .slogan {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--amarelo);
             text-transform: uppercase;
@@ -562,10 +529,10 @@
             color: var(--rosa);
         }
         .bio-section .bio-texto {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: var(--branco);
             max-width: 700px;
-            margin: 10px auto 0;
+            margin: 8px auto 0;
             position: relative;
             z-index: 1;
             line-height: 1.6;
@@ -581,7 +548,7 @@
 
         /* ===== FOFOQUINHA DO DIA ===== */
         .fofoca-dia {
-            padding: 28px 0;
+            padding: 24px 0;
             border-bottom: 1px solid rgba(111, 45, 168, 0.2);
             background: rgba(17, 17, 17, 0.3);
             backdrop-filter: blur(6px);
@@ -589,17 +556,17 @@
         }
 
         .fofoca-dia .titulo {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--amarelo);
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
         .fofoca-dia .titulo .emoji {
@@ -609,8 +576,8 @@
         .fofoca-dia .subtitulo {
             text-align: center;
             color: var(--rosa);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
             opacity: 0.9;
         }
 
@@ -649,25 +616,25 @@
         }
 
         .video-destaque-wrapper .info-destaque {
-            padding: 14px 20px 18px;
+            padding: 12px 18px 16px;
             background: rgba(17, 17, 17, 0.5);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
         .video-destaque-wrapper .info-destaque h3 {
             color: var(--amarelo);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
         }
         .video-destaque-wrapper .info-destaque p {
             color: #ccc;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 4px;
         }
 
         .vazio-destaque {
             text-align: center;
-            padding: 40px 20px;
+            padding: 36px 20px;
             color: #888;
             border: 2px dashed rgba(111, 45, 168, 0.3);
             border-radius: var(--borda-radius);
@@ -675,14 +642,14 @@
             backdrop-filter: blur(4px);
         }
         .vazio-destaque .grande {
-            font-size: 3.5rem;
+            font-size: 3rem;
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         /* ===== VÍDEOS ===== */
         .videos-section {
-            padding: 28px 0 50px;
+            padding: 24px 0 40px;
             background: rgba(17, 17, 17, 0.2);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
@@ -693,17 +660,17 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 16px;
         }
         .videos-section .cabecalho h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--rosa);
             text-transform: uppercase;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .videos-section .cabecalho h2 .amarelo {
             color: var(--amarelo);
@@ -711,8 +678,8 @@
 
         .grid-videos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
         }
 
         .card-video {
@@ -727,7 +694,7 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .card-video:hover {
-            transform: translateY(-6px) scale(1.01);
+            transform: translateY(-4px) scale(1.01);
             border-color: var(--amarelo);
             box-shadow: 0 12px 40px rgba(255, 212, 0, 0.08);
         }
@@ -761,7 +728,7 @@
             transition: all var(--transicao);
         }
         .card-video .thumb .play-overlay .play-btn {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.3));
             transition: all var(--transicao);
             animation: pulsar 2s ease-in-out infinite;
@@ -772,11 +739,11 @@
         }
 
         .card-video .info {
-            padding: 12px 14px 14px;
+            padding: 10px 12px 12px;
         }
         .card-video .info h4 {
             color: var(--branco);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             margin-bottom: 4px;
             display: -webkit-box;
@@ -787,10 +754,10 @@
         .card-video .info .meta {
             display: flex;
             align-items: center;
-            gap: 14px;
-            font-size: 0.75rem;
+            gap: 12px;
+            font-size: 0.7rem;
             color: #999;
-            margin-top: 6px;
+            margin-top: 4px;
         }
         .card-video .info .meta span {
             display: flex;
@@ -815,7 +782,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
             animation: deslizarCima 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .modal-overlay.aberto {
@@ -846,23 +813,23 @@
 
         .modal-fechar {
             position: sticky;
-            top: 12px;
-            right: 12px;
+            top: 10px;
+            right: 10px;
             float: right;
             background: var(--rosa);
             color: var(--branco);
             border: 2px solid var(--amarelo);
             border-radius: 50%;
-            width: 42px;
-            height: 42px;
-            font-size: 1.3rem;
+            width: 38px;
+            height: 38px;
+            font-size: 1.2rem;
             cursor: pointer;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all var(--transicao);
-            margin: 12px 12px 0 0;
+            margin: 10px 10px 0 0;
             backdrop-filter: blur(4px);
         }
         .modal-fechar:hover {
@@ -872,7 +839,7 @@
         }
 
         .modal-player {
-            padding: 0 20px 16px;
+            padding: 0 16px 12px;
             clear: both;
         }
         .modal-player .player-wrapper {
@@ -896,42 +863,42 @@
         }
 
         .modal-info {
-            padding: 0 20px 20px;
+            padding: 0 16px 16px;
         }
         .modal-info h2 {
             color: var(--amarelo);
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 800;
             margin-bottom: 2px;
         }
         .modal-info .desc {
             color: #bbb;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
         }
 
         .modal-acoes {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
-            padding: 10px 0 14px;
+            padding: 8px 0 12px;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            margin: 6px 0 14px;
+            margin: 4px 0 12px;
         }
         .modal-acoes .acao-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 18px;
+            gap: 6px;
+            padding: 5px 14px;
             border-radius: 60px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.04);
             color: var(--branco);
             font-family: 'Fredoka', sans-serif;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all var(--transicao);
             backdrop-filter: blur(4px);
@@ -965,65 +932,65 @@
             border-color: var(--amarelo);
         }
         .modal-acoes .contador {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #999;
             margin-left: 2px;
         }
 
         .modal-comentarios {
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .modal-comentarios h4 {
             color: var(--amarelo);
-            font-size: 0.95rem;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .modal-comentarios .lista-comentarios {
-            max-height: 180px;
+            max-height: 160px;
             overflow-y: auto;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             padding-right: 4px;
         }
         .modal-comentarios .lista-comentarios .comentario {
-            padding: 8px 12px;
+            padding: 6px 10px;
             background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             border-left: 2px solid var(--roxo);
             backdrop-filter: blur(4px);
         }
         .modal-comentarios .lista-comentarios .comentario .nome {
             font-weight: 700;
             color: var(--rosa);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         .modal-comentarios .lista-comentarios .comentario .texto {
             color: #ddd;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         .modal-comentarios .lista-comentarios .comentario .data {
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             color: #666;
         }
 
         .form-comentario {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         .form-comentario input {
             flex: 1;
-            min-width: 130px;
-            padding: 8px 16px;
+            min-width: 120px;
+            padding: 6px 14px;
             border-radius: 60px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
             color: var(--branco);
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
             transition: all var(--transicao);
             backdrop-filter: blur(4px);
@@ -1036,14 +1003,14 @@
             color: #666;
         }
         .form-comentario .btn-enviar {
-            padding: 8px 22px;
+            padding: 6px 18px;
             border-radius: 60px;
             border: 1px solid var(--amarelo);
             background: var(--amarelo);
             color: var(--preto);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all var(--transicao);
         }
@@ -1057,10 +1024,10 @@
         /* ===== POPUP ===== */
         .popup-fofoca {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 24px;
+            right: 24px;
             z-index: 999;
-            max-width: 340px;
+            max-width: 320px;
             width: calc(100% - 40px);
             background: rgba(17, 17, 17, 0.75);
             backdrop-filter: blur(20px);
@@ -1068,7 +1035,7 @@
             border-radius: var(--borda-radius);
             border: 1px solid rgba(255, 212, 0, 0.15);
             box-shadow: var(--sombra-forte);
-            padding: 16px 18px 14px;
+            padding: 14px 16px 12px;
             animation: deslizarCima 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: none;
             transform-origin: bottom right;
@@ -1080,22 +1047,22 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 6px;
         }
         .popup-fofoca .cabeca .titulo {
             font-weight: 800;
             color: var(--amarelo);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .popup-fofoca .cabeca .fechar-popup {
             background: transparent;
             border: none;
             color: #888;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all var(--transicao);
             padding: 0 4px;
@@ -1106,13 +1073,13 @@
         }
         .popup-fofoca .conteudo {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             cursor: pointer;
         }
         .popup-fofoca .conteudo .mini-thumb {
-            width: 64px;
-            height: 64px;
+            width: 58px;
+            height: 58px;
             border-radius: 12px;
             background: rgba(17, 17, 17, 0.8);
             flex-shrink: 0;
@@ -1131,21 +1098,21 @@
         .popup-fofoca .conteudo .info .nome {
             font-weight: 700;
             color: var(--branco);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
         .popup-fofoca .conteudo .info .badge {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--amarelo);
             background: rgba(255, 212, 0, 0.1);
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 20px;
             border: 1px solid rgba(255, 212, 0, 0.15);
             display: inline-block;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* ===== FOOTER ===== */
@@ -1154,14 +1121,14 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-top: 1px solid rgba(111, 45, 168, 0.2);
-            padding: 24px 20px 18px;
+            padding: 20px 20px 16px;
             text-align: center;
         }
         .footer .social {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-bottom: 10px;
+            gap: 16px;
+            margin-bottom: 8px;
             flex-wrap: wrap;
         }
         .footer .social a {
@@ -1170,10 +1137,10 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             font-weight: 600;
-            font-size: 0.95rem;
-            padding: 4px 12px;
+            font-size: 0.85rem;
+            padding: 3px 10px;
             border-radius: 40px;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid transparent;
@@ -1186,7 +1153,7 @@
         }
         .footer .copy {
             color: #666;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
         .footer .copy .rosa {
             color: var(--rosa);
@@ -1195,23 +1162,23 @@
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 100px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(111, 45, 168, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             color: var(--branco);
-            padding: 10px 28px;
+            padding: 8px 24px;
             border-radius: 60px;
             border: 1px solid var(--amarelo);
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             z-index: 2000;
             box-shadow: var(--sombra-forte);
             animation: deslizarCima 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: none;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             white-space: nowrap;
         }
@@ -1222,24 +1189,21 @@
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 992px) {
             .logo-imagem {
-                height: 40px;
-                max-width: 140px;
+                height: 38px;
+                max-width: 130px;
             }
             .bio-section .slogan {
-                font-size: 1.6rem;
-            }
-            .bio-section .bio-texto {
-                font-size: 0.95rem;
+                font-size: 1.5rem;
             }
             .fofoca-dia .titulo {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
             .videos-section .cabecalho h2 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
             .grid-videos {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 18px;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 16px;
             }
         }
 
@@ -1247,130 +1211,22 @@
             .header-inner {
                 flex-direction: column;
                 align-items: center;
-                gap: 6px;
+                gap: 4px;
             }
             .logo-imagem {
-                height: 36px;
-                max-width: 120px;
-            }
-            .header-actions .btn {
-                padding: 4px 12px;
-                font-size: 0.65rem;
-            }
-            .stories {
-                top: 104px;
-                padding: 8px 0;
-            }
-            .story-item {
-                padding: 2px 10px;
-            }
-            .story-item .icone {
-                font-size: 1.3rem;
-            }
-            .story-item .nome {
-                font-size: 0.5rem;
-            }
-            .bio-section {
-                padding: 18px 16px;
-            }
-            .bio-section .slogan {
-                font-size: 1.3rem;
-            }
-            .bio-section .bio-texto {
-                font-size: 0.85rem;
-            }
-            .fofoca-dia .titulo {
-                font-size: 1.1rem;
-                gap: 6px;
-            }
-            .fofoca-dia .subtitulo {
-                font-size: 0.8rem;
-                margin-bottom: 14px;
-            }
-            .video-destaque-wrapper .info-destaque h3 {
-                font-size: 1rem;
-            }
-            .grid-videos {
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
-            .card-video .info h4 {
-                font-size: 0.8rem;
-            }
-            .card-video .info .meta {
-                font-size: 0.65rem;
-                gap: 8px;
-            }
-            .modal-content {
-                max-height: 96vh;
-            }
-            .modal-player {
-                padding: 0 12px 12px;
-            }
-            .modal-info {
-                padding: 0 12px 16px;
-            }
-            .modal-info h2 {
-                font-size: 1rem;
-            }
-            .modal-acoes {
-                gap: 8px;
-                padding: 8px 0 10px;
-            }
-            .modal-acoes .acao-btn {
-                padding: 4px 12px;
-                font-size: 0.75rem;
-            }
-            .popup-fofoca {
-                bottom: 16px;
-                right: 16px;
-                max-width: 280px;
-                padding: 12px 14px 10px;
-            }
-            .popup-fofoca .conteudo .mini-thumb {
-                width: 52px;
-                height: 52px;
-            }
-            .popup-fofoca .conteudo .info .nome {
-                font-size: 0.75rem;
-            }
-            .toast {
-                font-size: 0.75rem;
-                padding: 8px 18px;
-                bottom: 70px;
-                max-width: 90%;
-            }
-            .footer .social a {
-                font-size: 0.8rem;
-                padding: 2px 10px;
-            }
-            .footer .copy {
-                font-size: 0.65rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 12px;
-            }
-            .header {
-                padding: 8px 0 6px;
-            }
-            .logo-imagem {
-                height: 30px;
-                max-width: 100px;
+                height: 34px;
+                max-width: 110px;
             }
             .header-actions .btn {
                 padding: 3px 10px;
-                font-size: 0.55rem;
-                border-width: 1px;
+                font-size: 0.6rem;
             }
             .stories {
-                top: 88px;
-                padding: 4px 0;
+                padding: 2px 0 4px;
             }
             .story-item {
                 padding: 2px 8px;
+                gap: 1px;
             }
             .story-item .icone {
                 font-size: 1.1rem;
@@ -1378,89 +1234,196 @@
             .story-item .nome {
                 font-size: 0.45rem;
             }
+            .bio-section {
+                padding: 16px 14px;
+            }
             .bio-section .slogan {
-                font-size: 1rem;
+                font-size: 1.2rem;
             }
             .bio-section .bio-texto {
-                font-size: 0.75rem;
-            }
-            .fofoca-dia {
-                padding: 18px 0;
+                font-size: 0.8rem;
             }
             .fofoca-dia .titulo {
-                font-size: 0.95rem;
+                font-size: 1.1rem;
+                gap: 4px;
             }
             .fofoca-dia .subtitulo {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
+                margin-bottom: 12px;
+            }
+            .video-destaque-wrapper .info-destaque h3 {
+                font-size: 0.95rem;
             }
             .grid-videos {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
-            .card-video .info {
-                padding: 8px 10px 10px;
-            }
             .card-video .info h4 {
-                font-size: 0.7rem;
+                font-size: 0.75rem;
             }
             .card-video .info .meta {
-                font-size: 0.55rem;
+                font-size: 0.6rem;
+                gap: 6px;
+            }
+            .modal-content {
+                max-height: 96vh;
+            }
+            .modal-player {
+                padding: 0 10px 10px;
+            }
+            .modal-info {
+                padding: 0 10px 14px;
+            }
+            .modal-info h2 {
+                font-size: 0.95rem;
+            }
+            .modal-acoes {
+                gap: 6px;
+                padding: 6px 0 10px;
+            }
+            .modal-acoes .acao-btn {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
+            .popup-fofoca {
+                bottom: 14px;
+                right: 14px;
+                max-width: 260px;
+                padding: 10px 12px 8px;
+            }
+            .popup-fofoca .conteudo .mini-thumb {
+                width: 48px;
+                height: 48px;
+            }
+            .popup-fofoca .conteudo .info .nome {
+                font-size: 0.7rem;
+            }
+            .toast {
+                font-size: 0.7rem;
+                padding: 6px 16px;
+                bottom: 60px;
+                max-width: 90%;
+            }
+            .footer .social a {
+                font-size: 0.75rem;
+                padding: 2px 8px;
+            }
+            .footer .copy {
+                font-size: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            .header {
+                padding: 4px 0 0;
+            }
+            .logo-imagem {
+                height: 28px;
+                max-width: 90px;
+            }
+            .header-actions .btn {
+                padding: 2px 8px;
+                font-size: 0.5rem;
+                border-width: 1px;
+            }
+            .stories {
+                padding: 2px 0 4px;
+            }
+            .story-item {
+                padding: 2px 6px;
+            }
+            .story-item .icone {
+                font-size: 0.9rem;
+            }
+            .story-item .nome {
+                font-size: 0.4rem;
+            }
+            .bio-section .slogan {
+                font-size: 1rem;
+            }
+            .bio-section .bio-texto {
+                font-size: 0.7rem;
+            }
+            .fofoca-dia {
+                padding: 16px 0;
+            }
+            .fofoca-dia .titulo {
+                font-size: 0.9rem;
+            }
+            .fofoca-dia .subtitulo {
+                font-size: 0.65rem;
+            }
+            .grid-videos {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .card-video .info {
+                padding: 6px 8px 8px;
+            }
+            .card-video .info h4 {
+                font-size: 0.65rem;
+            }
+            .card-video .info .meta {
+                font-size: 0.5rem;
                 gap: 4px;
                 flex-wrap: wrap;
             }
             .modal-fechar {
-                width: 32px;
-                height: 32px;
-                font-size: 1rem;
-                margin: 8px 8px 0 0;
+                width: 30px;
+                height: 30px;
+                font-size: 0.9rem;
+                margin: 6px 6px 0 0;
             }
             .modal-info h2 {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             .modal-acoes .acao-btn {
-                padding: 3px 10px;
-                font-size: 0.65rem;
-                gap: 4px;
+                padding: 2px 8px;
+                font-size: 0.6rem;
+                gap: 3px;
             }
             .form-comentario input {
-                font-size: 0.75rem;
-                padding: 6px 12px;
-                min-width: 80px;
+                font-size: 0.7rem;
+                padding: 4px 10px;
+                min-width: 70px;
             }
             .form-comentario .btn-enviar {
-                padding: 6px 14px;
-                font-size: 0.75rem;
+                padding: 4px 12px;
+                font-size: 0.7rem;
             }
             .popup-fofoca {
-                max-width: 240px;
-                padding: 10px 10px 8px;
+                max-width: 220px;
+                padding: 8px 10px 6px;
                 bottom: 10px;
                 right: 10px;
             }
             .popup-fofoca .conteudo .mini-thumb {
-                width: 44px;
-                height: 44px;
+                width: 40px;
+                height: 40px;
             }
             .popup-fofoca .conteudo .info .nome {
-                font-size: 0.65rem;
+                font-size: 0.6rem;
             }
             .popup-fofoca .cabeca .titulo {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             .popup-fofoca .cabeca .fechar-popup {
-                font-size: 1rem;
+                font-size: 0.9rem;
             }
             .footer .social a {
-                font-size: 0.7rem;
-                padding: 2px 8px;
+                font-size: 0.65rem;
+                padding: 1px 6px;
             }
             .footer .copy {
-                font-size: 0.55rem;
+                font-size: 0.5rem;
             }
             .toast {
-                font-size: 0.65rem;
-                padding: 6px 14px;
-                bottom: 60px;
+                font-size: 0.6rem;
+                padding: 4px 12px;
+                bottom: 50px;
                 max-width: 95%;
             }
         }
@@ -1468,15 +1431,15 @@
         @media (max-width: 380px) {
             .grid-videos {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 10px;
             }
             .logo-imagem {
-                height: 26px;
-                max-width: 80px;
+                height: 24px;
+                max-width: 70px;
             }
             .header-actions .btn {
-                font-size: 0.5rem;
-                padding: 2px 8px;
+                font-size: 0.45rem;
+                padding: 2px 6px;
             }
         }
 
@@ -1532,7 +1495,7 @@
         </div>
     </header>
 
-    <!-- ===== STORIES ===== -->
+    <!-- ===== STORIES (colado com header) ===== -->
     <nav class="stories" id="storiesNav">
         <div class="stories-inner">
             <div class="story-item ativo" data-tab="todas">
@@ -1675,6 +1638,71 @@
 
     <script>
         // ============================================================
+        //  BLOQUEIO DE ZOOM (reforçado)
+        // ============================================================
+        (function preventZoom() {
+            // Desabilitar zoom com Ctrl + + / - / 0
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
+                    e.preventDefault();
+                }
+                // Desabilitar zoom com Ctrl + scroll (em alguns navegadores)
+                if (e.ctrlKey && (e.key === 'Meta' || e.key === 'Control')) {
+                    // não faz nada, mas o evento wheel cuida do resto
+                }
+            });
+
+            // Desabilitar zoom com scroll + Ctrl (em alguns navegadores)
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { passive: false });
+
+            // Desabilitar pinça (touch) – para dispositivos móveis
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches && e.touches.length >= 2) {
+                    e.preventDefault();
+                    return false;
+                }
+            }, { passive: false });
+
+            // Impedir double-tap zoom em alguns navegadores
+            document.addEventListener('dblclick', function(e) {
+                e.preventDefault();
+            });
+
+            // Impedir que o campo de input ative zoom em alguns dispositivos
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // Força o viewport a não escalar
+                    const meta = document.querySelector('meta[name="viewport"]');
+                    if (meta) {
+                        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+                    }
+                });
+            });
+
+            // Reforço no viewport a cada mudança de orientação
+            window.addEventListener('orientationchange', function() {
+                const meta = document.querySelector('meta[name="viewport"]');
+                if (meta) {
+                    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+                }
+            });
+
+            // Reforço no resize (alguns navegadores tentam reescalar)
+            window.addEventListener('resize', function() {
+                const meta = document.querySelector('meta[name="viewport"]');
+                if (meta) {
+                    meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+                }
+            });
+        })();
+
+        // ============================================================
         //  DATA LAYER
         // ============================================================
         const STORAGE_KEY = 'fofoca_data';
@@ -1706,7 +1734,6 @@
                     for (const k in def) {
                         if (!(k in parsed)) parsed[k] = def[k];
                     }
-                    // Garantir que redesSociais tenha todos os campos
                     const rs = parsed.redesSociais || {};
                     const defRs = def.redesSociais;
                     for (const k in defRs) {
@@ -1755,6 +1782,18 @@
         }
 
         // ============================================================
+        //  AJUSTE DO STORIES (colado com header)
+        // ============================================================
+        function ajustarStories() {
+            const header = document.getElementById('header');
+            const stories = document.getElementById('storiesNav');
+            if (header && stories) {
+                const alturaHeader = header.offsetHeight;
+                stories.style.top = alturaHeader + 'px';
+            }
+        }
+
+        // ============================================================
         //  RENDER
         // ============================================================
         let dados = loadData();
@@ -1794,6 +1833,9 @@
             if (totalEl) {
                 totalEl.textContent = dados.videos.length + ' vídeos';
             }
+
+            // Ajusta o stories após renderização
+            ajustarStories();
         }
 
         function renderRedesSociais() {
@@ -2198,6 +2240,12 @@
             initStories();
             createManifest();
             registerSW();
+
+            // Reajustar stories ao redimensionar
+            window.addEventListener('resize', ajustarStories);
+            window.addEventListener('orientationchange', () => {
+                setTimeout(ajustarStories, 300);
+            });
 
             document.getElementById('modalFechar')?.addEventListener('click', fecharModal);
             document.getElementById('modalVideo')?.addEventListener('click', (e) => {
