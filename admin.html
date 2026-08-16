@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Admin · Fofoca da Minha Rua</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rosa: #FF2D95;
+            --amarelo: #FFD400;
+            --roxo: #6F2DA8;
+            --preto: #111111;
+            --branco: #FFFFFF;
+            --rosa-claro: #ff6bb5;
+            --roxo-claro: #9b5fd4;
+            --sombra: 0 8px 30px rgba(17, 17, 17, 0.25);
+            --sombra-forte: 0 12px 40px rgba(17, 17, 17, 0.35);
+            --borda-radius: 24px;
+            --transicao: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --glass-bg: rgba(17, 17, 17, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--preto);
+            color: var(--branco);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+            position: relative;
+            touch-action: pan-y pinch-zoom;
+        }
+
+        /* ===== LIQUID GLASS BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, #6F2DA8 0%, #111111 70%);
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 70%, #FF2D95 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, #FFD400 0%, transparent 40%);
+            z-index: -1;
+            opacity: 0.3;
+            animation: ondaBg 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes ondaBg {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.25;
+            }
+            33% {
+                transform: translate(30px, -20px) scale(1.1);
+                opacity: 0.35;
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.9);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(10px, -10px) scale(1.05);
+                opacity: 0.3;
+            }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(4px);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--rosa);
+            border-radius: 10px;
+            border: 1px solid var(--amarelo);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--roxo);
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes pulsar {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        @keyframes balancar {
+            0%,
+            100% {
+                transform: rotate(-2deg) scale(1);
+            }
+            50% {
+                transform: rotate(2deg) scale(1.02);
+            }
+        }
+        @keyframes piscar {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        @keyframes deslizarCima {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes flutuar {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+        @keyframes estourar {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes girarSuave {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animar-pulsar {
+            animation: pulsar 1.8s ease-in-out infinite;
+        }
+        .animar-balancar {
+            animation: balancar 2s ease-in-out infinite;
+        }
+        .animar-piscar {
+            animation: piscar 1.2s ease-in-out infinite;
+        }
+        .animar-flutuar {
+            animation: flutuar 3s ease-in-out infinite;
+        }
+        .animar-estourar {
+            animation: estourar 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .animar-deslizar {
+            animation: deslizarCima 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* ===== GLASS ===== */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(14px) saturate(1.2);
+            -webkit-backdrop-filter: blur(14px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            padding: 10px 0 8px;
+            border-bottom: 1px solid rgba(255, 212, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(17, 17, 17, 0.75);
+            backdrop-filter: blur(16px) saturate(1.3);
+            -webkit-backdrop-filter: blur(16px) saturate(1.3);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .logo-imagem {
+            height: 40px;
+            width: auto;
+            max-width: 140px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(255, 45, 149, 0.2));
+            border-radius: 10px;
+        }
+
+        .logo-texto {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--branco);
+            text-transform: uppercase;
+        }
+        .logo-texto .amarelo {
+            color: var(--amarelo);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            border-radius: 60px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all var(--transicao);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--branco);
+            color: var(--preto);
+        }
+        .btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: var(--sombra-forte);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn-rosa {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-rosa:hover {
+            background: var(--roxo);
+        }
+        .btn-amarelo {
+            background: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--preto);
+        }
+        .btn-amarelo:hover {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-outline:hover {
+            background: var(--amarelo);
+            color: var(--preto);
+        }
+        .btn-pequeno {
+            padding: 4px 12px;
+            font-size: 0.65rem;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            max-width: 420px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: var(--borda-radius);
+            text-align: center;
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 212, 0, 0.15);
+            box-shadow: var(--sombra-forte);
+            animation: deslizarCima 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .login-box .icone {
+            font-size: 3.5rem;
+            display: block;
+            margin-bottom: 8px;
+            animation: flutuar 3s ease-in-out infinite;
+        }
+        .login-box h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--amarelo);
+            margin-bottom: 4px;
+        }
+        .login-box p {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .login-box input {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--branco);
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all var(--transicao);
+            margin-bottom: 16px;
+        }
+        .login-box input:focus {
+            border-color: var(--amarelo);
+            box-shadow: 0 0 20px rgba(255, 212, 0, 0.05);
+        }
+        .login-box input::placeholder {
+            color: #666;
+        }
+        .login-box .btn {
+            width: 100%;
+            justify-content: center;
+            font-size: 1rem;
+            padding: 12px;
+        }
+        .login-box .erro {
+            color: var(--rosa);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            min-height: 24px;
+        }
+
+        /* ===== PAINEL ===== */
+        .painel {
+            display: none;
+            padding: 20px 0 40px;
+        }
+        .painel.ativo {
+            display: block;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 212, 0, 0.1);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 1px solid transparent;
+            background: transparent;
+            color: #888;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all var(--transicao);
+        }
+        .tab-btn:hover {
+            color: var(--branco);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .tab-btn.ativo {
+            color: var(--branco);
+            background: var(--roxo);
+            border-color: var(--amarelo);
+            box-shadow: 0 0 20px rgba(111, 45, 168, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            animation: deslizarCima 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .tab-content.ativo {
+            display: block;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--borda-radius);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 24px 24px 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        .card h3 {
+            color: var(--amarelo);
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card h3 .rosa {
+            color: var(--rosa);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ccc;
+            margin-bottom: 4px;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 16px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--branco);
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all var(--transicao);
+        }
+        .form-group textarea {
+            border-radius: 20px;
+            resize: vertical;
+            min-height: 70px;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--amarelo);
+            box-shadow: 0 0 20px rgba(255, 212, 0, 0.05);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #666;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .btn-salvar {
+            background: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--preto);
+            padding: 10px 30px;
+            font-size: 0.9rem;
+        }
+        .btn-salvar:hover {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+
+        .btn-danger {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--preto);
+        }
+        .btn-danger:hover {
+            background: #cc005f;
+            border-color: var(--amarelo);
+        }
+
+        .btn-roxo {
+            background: var(--roxo);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-roxo:hover {
+            background: var(--rosa);
+        }
+
+        /* ===== LISTA DE VÍDEOS ===== */
+        .lista-videos {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item-video {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border-left: 4px solid var(--roxo);
+            transition: all var(--transicao);
+        }
+        .item-video:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .item-video .info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .item-video .info .titulo {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--branco);
+        }
+        .item-video .info .meta {
+            font-size: 0.7rem;
+            color: #888;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+        .item-video .info .meta .destaque {
+            color: var(--amarelo);
+        }
+        .item-video .info .meta .popup {
+            color: var(--rosa);
+        }
+        .item-video .acoes {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .item-video .acoes .btn {
+            padding: 4px 12px;
+            font-size: 0.6rem;
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(111, 45, 168, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--branco);
+            padding: 10px 28px;
+            border-radius: 60px;
+            border: 1px solid var(--amarelo);
+            font-weight: 600;
+            font-size: 0.85rem;
+            z-index: 2000;
+            box-shadow: var(--sombra-forte);
+            animation: deslizarCima 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+            gap: 8px;
+            align-items: center;
+            white-space: nowrap;
+        }
+        .toast.visivel {
+            display: flex;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .logo-imagem {
+                height: 34px;
+                max-width: 110px;
+            }
+            .logo-texto {
+                font-size: 1rem;
+            }
+            .header-inner {
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+            }
+            .card {
+                padding: 18px 16px 20px;
+            }
+            .item-video {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .item-video .acoes {
+                justify-content: flex-start;
+            }
+            .login-box {
+                padding: 30px 20px;
+            }
+            .login-box h1 {
+                font-size: 1.5rem;
+            }
+            .tabs {
+                gap: 4px;
+            }
+            .tab-btn {
+                font-size: 0.7rem;
+                padding: 6px 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 12px;
+            }
+            .card h3 {
+                font-size: 1rem;
+            }
+            .form-group input,
+            .form-group textarea {
+                font-size: 0.8rem;
+                padding: 8px 14px;
+            }
+            .btn {
+                font-size: 0.65rem;
+                padding: 4px 12px;
+            }
+            .btn-salvar {
+                font-size: 0.8rem;
+                padding: 8px 20px;
+            }
+            .item-video .info .titulo {
+                font-size: 0.85rem;
+            }
+            .toast {
+                font-size: 0.7rem;
+                padding: 6px 16px;
+                bottom: 20px;
+                max-width: 90%;
+            }
+        }
+
+        /* ===== UTILITÁRIOS ===== */
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .flex {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"><span id="toastMsg">✅ Salvo!</span></div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="container header-inner">
+            <a class="logo" href="index.html" target="_blank">
+                <img src="https://i.ibb.co/rRp2jYtk/logo-fofoca.png" alt="Fofoca" class="logo-imagem" id="logoPreview" />
+                <span class="logo-texto"><span class="amarelo">Admin</span></span>
+            </a>
+            <div>
+                <button class="btn btn-outline btn-pequeno" id="btnLogout">🚪 Sair</button>
+                <a href="index.html" class="btn btn-rosa btn-pequeno" target="_blank">📱 Ver site</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== LOGIN ===== -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box glass">
+            <span class="icone">🔐</span>
+            <h1>Fofoca Admin</h1>
+            <p>Digite a senha para acessar o painel</p>
+            <input type="password" id="senhaInput" placeholder="Senha" />
+            <button class="btn btn-amarelo" id="btnLogin">Entrar</button>
+            <div class="erro" id="loginErro"></div>
+        </div>
+    </div>
+
+    <!-- ===== PAINEL ===== -->
+    <div class="painel container" id="painel">
+        <!-- TABS -->
+        <div class="tabs">
+            <button class="tab-btn ativo" data-tab="config">⚙️ Configurações</button>
+            <button class="tab-btn" data-tab="videos">🎬 Vídeos</button>
+        </div>
+
+        <!-- CONFIGURAÇÕES -->
+        <div class="tab-content ativo" id="tabConfig">
+            <div class="card">
+                <h3>⚙️ <span class="rosa">Configurações</span> do Site</h3>
+                <div class="form-group">
+                    <label>Logo (URL ou upload)</label>
+                    <div class="flex">
+                        <input type="text" id="logoUrl" placeholder="URL da imagem" style="flex:1;" />
+                        <label class="btn btn-roxo btn-pequeno" style="cursor:pointer;">
+                            📁 Upload
+                            <input type="file" id="logoUpload" accept="image/*" style="display:none;" />
+                        </label>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <img id="logoPreviewAdmin" src="https://i.ibb.co/rRp2jYtk/logo-fofoca.png" alt="Logo preview" style="max-height:60px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);padding:4px;" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Bio do site</label>
+                    <textarea id="bioInput" rows="2">💬 Da sua rua, família, trabalho ou de quem você quiser 👀
+📩 Mande sua fofoca no direct &nbsp; 🔒 Anônimo é garantido!</textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Instagram</label>
+                        <input type="url" id="socialInstagram" placeholder="https://instagram.com/..." />
+                    </div>
+                    <div class="form-group">
+                        <label>YouTube</label>
+                        <input type="url" id="socialYoutube" placeholder="https://youtube.com/..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter / X</label>
+                        <input type="url" id="socialTwitter" placeholder="https://twitter.com/..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="socialEmail" placeholder="contato@..." />
+                    </div>
+                </div>
+                <button class="btn btn-salvar" id="btnSalvarConfig">💾 Salvar configurações</button>
+            </div>
+        </div>
+
+        <!-- VÍDEOS -->
+        <div class="tab-content" id="tabVideos">
+            <div class="card">
+                <h3>🎬 <span class="rosa">Gerenciar</span> Vídeos</h3>
+                <div style="margin-bottom:16px;">
+                    <button class="btn btn-amarelo" id="btnNovoVideo">➕ Novo vídeo</button>
+                </div>
+                <div id="formNovoVideo" class="hidden" style="background:rgba(255,255,255,0.03);padding:16px;border-radius:20px;margin-bottom:16px;border:1px dashed var(--amarelo);">
+                    <h4 style="color:var(--amarelo);font-size:1rem;margin-bottom:10px;">✏️ Adicionar vídeo</h4>
+                    <div class="form-group">
+                        <label>Título *</label>
+                        <input type="text" id="videoTitulo" placeholder="Título da fofoca" />
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="videoDesc" placeholder="Breve descrição" />
+                    </div>
+                    <div class="form-group">
+                        <label>Link do vídeo (YouTube, Facebook, Instagram, etc.) *</label>
+                        <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Capa (URL da imagem, opcional)</label>
+                        <input type="url" id="videoCapa" placeholder="https://.../capa.jpg" />
+                    </div>
+                    <div class="flex">
+                        <button class="btn btn-salvar" id="btnSalvarVideo">💾 Salvar vídeo</button>
+                        <button class="btn btn-outline" id="btnCancelarVideo">Cancelar</button>
+                    </div>
+                    <input type="hidden" id="videoEditId" />
+                </div>
+
+                <div class="lista-videos" id="listaVideos">
+                    <!-- será preenchido via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  BLOQUEIO DE ZOOM (reforçado)
+        // ============================================================
+        (function preventZoom() {
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0' || e.key === '=')) {
+                    e.preventDefault();
+                }
+            });
+            document.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) { e.preventDefault();
+                    return false; }
+            }, { passive: false });
+            document.addEventListener('touchmove', function(e) {
+                if (e.touches && e.touches.length >= 2) { e.preventDefault();
+                    return false; }
+            }, { passive: false });
+            document.addEventListener('dblclick', function(e) { e.preventDefault(); });
+            const meta = document.querySelector('meta[name="viewport"]');
+            if (meta) {
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+            }
+        })();
+
+        // ============================================================
+        //  DATA LAYER
+        // ============================================================
+        const STORAGE_KEY = 'fofoca_data';
+        const SENHA_ADMIN = 'admin123'; // senha fixa
+
+        function getDefaultData() {
+            return {
+                siteNome: 'FOFOCA DA MINHA RUA',
+                bio: '💬 Da sua rua, família, trabalho ou de quem você quiser 👀<br /><span>📩 Mande sua fofoca no direct &nbsp; 🔒 Anônimo é garantido!</span>',
+                logoUrl: 'https://i.ibb.co/rRp2jYtk/logo-fofoca.png',
+                redesSociais: {
+                    instagram: '#',
+                    youtube: '#',
+                    twitter: '#',
+                    email: '#'
+                },
+                videos: [],
+                destaqueId: null,
+                popupAtivo: false,
+                popupVideoId: null,
+            };
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    const def = getDefaultData();
+                    for (const k in def) {
+                        if (!(k in parsed)) parsed[k] = def[k];
+                    }
+                    const rs = parsed.redesSociais || {};
+                    const defRs = def.redesSociais;
+                    for (const k in defRs) {
+                        if (!(k in rs)) rs[k] = defRs[k];
+                    }
+                    parsed.redesSociais = rs;
+                    return parsed;
+                }
+            } catch (_) { /* ignora */ }
+            return getDefaultData();
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function gerarId() {
+            return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+        }
+
+        function toast(msg) {
+            const el = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            if (!el || !msgEl) return;
+            msgEl.textContent = msg;
+            el.classList.add('visivel');
+            clearTimeout(el._timeout);
+            el._timeout = setTimeout(() => el.classList.remove('visivel'), 3000);
+        }
+
+        // ============================================================
+        //  RENDER
+        // ============================================================
+        let dados = loadData();
+
+        function renderAdmin() {
+            // Logo preview
+            const preview = document.getElementById('logoPreviewAdmin');
+            const logoPreviewHeader = document.getElementById('logoPreview');
+            if (dados.logoUrl) {
+                preview.src = dados.logoUrl;
+                logoPreviewHeader.src = dados.logoUrl;
+            }
+            document.getElementById('logoUrl').value = dados.logoUrl || '';
+            document.getElementById('bioInput').value = dados.bio || '';
+            document.getElementById('socialInstagram').value = dados.redesSociais?.instagram || '';
+            document.getElementById('socialYoutube').value = dados.redesSociais?.youtube || '';
+            document.getElementById('socialTwitter').value = dados.redesSociais?.twitter || '';
+            document.getElementById('socialEmail').value = dados.redesSociais?.email || '';
+            renderVideosList();
+        }
+
+        function renderVideosList() {
+            const container = document.getElementById('listaVideos');
+            if (!container) return;
+            if (!dados.videos || dados.videos.length === 0) {
+                container.innerHTML = `<div style="color:#666;padding:20px;text-align:center;">Nenhum vídeo cadastrado. Adicione o primeiro!</div>`;
+                return;
+            }
+            container.innerHTML = dados.videos.map(v => {
+                const isDestaque = dados.destaqueId === v.id;
+                const isPopup = dados.popupAtivo && dados.popupVideoId === v.id;
+                return `
+                    <div class="item-video">
+                        <div class="info">
+                            <div class="titulo">${v.titulo}</div>
+                            <div class="meta">
+                                <span>❤️ ${v.likes || 0}</span>
+                                <span>💬 ${(v.comentarios || []).length}</span>
+                                ${isDestaque ? '<span class="destaque">⭐ Destaque</span>' : ''}
+                                ${isPopup ? '<span class="popup">📢 Popup ativo</span>' : ''}
+                                <span>${v.tipo || 'link'}</span>
+                            </div>
+                        </div>
+                        <div class="acoes">
+                            <button class="btn btn-roxo btn-pequeno" data-id="${v.id}" data-acao="editar">✏️</button>
+                            <button class="btn ${isDestaque ? 'btn-amarelo' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="destaque">⭐</button>
+                            <button class="btn ${isPopup ? 'btn-rosa' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="popup">📢</button>
+                            <button class="btn btn-danger btn-pequeno" data-id="${v.id}" data-acao="excluir">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Eventos nos botões
+            container.querySelectorAll('[data-acao]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = this.dataset.id;
+                    const acao = this.dataset.acao;
+                    if (!id) return;
+                    if (acao === 'excluir') {
+                        if (confirm('Tem certeza que deseja excluir este vídeo?')) {
+                            dados.videos = dados.videos.filter(v => v.id !== id);
+                            if (dados.destaqueId === id) dados.destaqueId = null;
+                            if (dados.popupVideoId === id) { dados.popupAtivo = false;
+                                dados.popupVideoId = null; }
+                            saveData(dados);
+                            renderVideosList();
+                            toast('🗑️ Vídeo excluído!');
+                        }
+                    } else if (acao === 'destaque') {
+                        dados.destaqueId = dados.destaqueId === id ? null : id;
+                        saveData(dados);
+                        renderVideosList();
+                        toast(dados.destaqueId ? '⭐ Vídeo em destaque!' : '⭐ Destaque removido');
+                    } else if (acao === 'popup') {
+                        if (dados.popupAtivo && dados.popupVideoId === id) {
+                            dados.popupAtivo = false;
+                            dados.popupVideoId = null;
+                        } else {
+                            dados.popupAtivo = true;
+                            dados.popupVideoId = id;
+                        }
+                        saveData(dados);
+                        renderVideosList();
+                        toast(dados.popupAtivo ? '📢 Popup ativado!' : '📢 Popup desativado');
+                    } else if (acao === 'editar') {
+                        const video = dados.videos.find(v => v.id === id);
+                        if (video) {
+                            document.getElementById('videoTitulo').value = video.titulo || '';
+                            document.getElementById('videoDesc').value = video.descricao || '';
+                            document.getElementById('videoUrl').value = video.url || '';
+                            document.getElementById('videoCapa').value = video.capa || '';
+                            document.getElementById('videoEditId').value = video.id;
+                            document.getElementById('formNovoVideo').classList.remove('hidden');
+                            document.getElementById('formNovoVideo').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+            });
+        }
+
+        // ============================================================
+        //  ADMIN: LOGIN / LOGOUT
+        // ============================================================
+        let logado = false;
+
+        function verificarLogin() {
+            const sessao = sessionStorage.getItem('admin_logado');
+            if (sessao === 'true') {
+                logado = true;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('painel').classList.add('ativo');
+                renderAdmin();
+            }
+        }
+
+        document.getElementById('btnLogin').addEventListener('click', function() {
+            const senha = document.getElementById('senhaInput').value.trim();
+            if (senha === SENHA_ADMIN) {
+                sessionStorage.setItem('admin_logado', 'true');
+                logado = true;
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('painel').classList.add('ativo');
+                renderAdmin();
+                toast('🔓 Login realizado!');
+            } else {
+                document.getElementById('loginErro').textContent = '❌ Senha incorreta. Tente novamente.';
+            }
+        });
+
+        document.getElementById('senhaInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('btnLogin').click();
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', function() {
+            sessionStorage.removeItem('admin_logado');
+            logado = false;
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('painel').classList.remove('ativo');
+            document.getElementById('senhaInput').value = '';
+            document.getElementById('loginErro').textContent = '';
+            toast('🚪 Deslogado');
+        });
+
+        // ============================================================
+        //  TABS
+        // ============================================================
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+                this.classList.add('ativo');
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('ativo'));
+                document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('ativo');
+            });
+        });
+
+        // ============================================================
+        //  CONFIGURAÇÕES
+        // ============================================================
+        document.getElementById('logoUpload').addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const base64 = ev.target.result;
+                document.getElementById('logoUrl').value = base64;
+                document.getElementById('logoPreviewAdmin').src = base64;
+                document.getElementById('logoPreview').src = base64;
+                toast('📸 Logo carregada! Clique em "Salvar configurações" para aplicar.');
+            };
+            reader.readAsDataURL(file);
+            this.value = '';
+        });
+
+        document.getElementById('logoUrl').addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url) {
+                document.getElementById('logoPreviewAdmin').src = url;
+                document.getElementById('logoPreview').src = url;
+            }
+        });
+
+        document.getElementById('btnSalvarConfig').addEventListener('click', function() {
+            dados.logoUrl = document.getElementById('logoUrl').value.trim();
+            dados.bio = document.getElementById('bioInput').value.trim();
+            dados.redesSociais = {
+                instagram: document.getElementById('socialInstagram').value.trim(),
+                youtube: document.getElementById('socialYoutube').value.trim(),
+                twitter: document.getElementById('socialTwitter').value.trim(),
+                email: document.getElementById('socialEmail').value.trim(),
+            };
+            saveData(dados);
+            renderAdmin();
+            toast('✅ Configurações salvas!');
+        });
+
+        // ============================================================
+        //  VÍDEOS - ADICIONAR / EDITAR
+        // ============================================================
+        document.getElementById('btnNovoVideo').addEventListener('click', function() {
+            document.getElementById('videoTitulo').value = '';
+            document.getElementById('videoDesc').value = '';
+            document.getElementById('videoUrl').value = '';
+            document.getElementById('videoCapa').value = '';
+            document.getElementById('videoEditId').value = '';
+            document.getElementById('formNovoVideo').classList.remove('hidden');
+            document.getElementById('formNovoVideo').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        document.getElementById('btnCancelarVideo').addEventListener('click', function() {
+            document.getElementById('formNovoVideo').classList.add('hidden');
+        });
+
+        document.getElementById('btnSalvarVideo').addEventListener('click', function() {
+            const titulo = document.getElementById('videoTitulo').value.trim();
+            const descricao = document.getElementById('videoDesc').value.trim();
+            const url = document.getElementById('videoUrl').value.trim();
+            const capa = document.getElementById('videoCapa').value.trim();
+            const editId = document.getElementById('videoEditId').value;
+
+            if (!titulo || !url) {
+                toast('⚠️ Preencha título e link do vídeo.');
+                return;
+            }
+
+            // Detecta tipo da URL (apenas para exibição)
+            let tipo = 'link';
+            if (url.includes('youtube.com') || url.includes('youtu.be')) tipo = 'youtube';
+            else if (url.includes('facebook.com') || url.includes('fb.com')) tipo = 'facebook';
+            else if (url.includes('instagram.com')) tipo = 'instagram';
+
+            if (editId) {
+                // Editar
+                const video = dados.videos.find(v => v.id === editId);
+                if (video) {
+                    video.titulo = titulo;
+                    video.descricao = descricao;
+                    video.url = url;
+                    video.capa = capa;
+                    video.tipo = tipo;
+                }
+                toast('✏️ Vídeo atualizado!');
+            } else {
+                // Novo
+                const novo = {
+                    id: gerarId(),
+                    titulo,
+                    descricao,
+                    url,
+                    capa,
+                    tipo,
+                    data: Date.now(),
+                    likes: 0,
+                    comentarios: [],
+                };
+                dados.videos.unshift(novo);
+                toast('➕ Vídeo adicionado!');
+            }
+
+            saveData(dados);
+            renderVideosList();
+            document.getElementById('formNovoVideo').classList.add('hidden');
+        });
+
+        // ============================================================
+        //  INICIALIZAÇÃO
+        // ============================================================
+        verificarLogin();
+
+        console.log('🔐 Admin da Fofoca da Minha Rua');
+    </script>
+</body>
+</html>
