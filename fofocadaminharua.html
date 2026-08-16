@@ -1,0 +1,2125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>Fofoca da Minha Rua</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --rosa: #FF2D95;
+            --amarelo: #FFD400;
+            --roxo: #6F2DA8;
+            --preto: #111111;
+            --branco: #FFFFFF;
+            --rosa-claro: #ff6bb5;
+            --roxo-claro: #9b5fd4;
+            --sombra: 0 8px 30px rgba(17, 17, 17, 0.25);
+            --sombra-forte: 0 12px 40px rgba(17, 17, 17, 0.35);
+            --borda-radius: 24px;
+            --transicao: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: var(--preto);
+            color: var(--branco);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--preto);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--rosa);
+            border-radius: 10px;
+            border: 2px solid var(--amarelo);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--roxo);
+        }
+
+        /* ===== ANIMAÇÕES GLOBAIS ===== */
+        @keyframes pulsar {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        @keyframes balancar {
+            0%,
+            100% {
+                transform: rotate(-2deg) scale(1);
+            }
+            50% {
+                transform: rotate(2deg) scale(1.02);
+            }
+        }
+        @keyframes piscar {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        @keyframes deslizarCima {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes deslizarLado {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes vibrar {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            10% {
+                transform: translateX(-6px) rotate(-1deg);
+            }
+            20% {
+                transform: translateX(6px) rotate(1deg);
+            }
+            30% {
+                transform: translateX(-4px);
+            }
+            40% {
+                transform: translateX(4px);
+            }
+            50% {
+                transform: translateX(-2px);
+            }
+            60% {
+                transform: translateX(2px);
+            }
+            70% {
+                transform: translateX(-1px);
+            }
+            80% {
+                transform: translateX(1px);
+            }
+            90% {
+                transform: translateX(0);
+            }
+        }
+        @keyframes girarSuave {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes brilhar {
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(255, 45, 149, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 212, 0, 0.6), 0 0 80px rgba(255, 45, 149, 0.3);
+            }
+        }
+        @keyframes flutuar {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+        @keyframes estourar {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.3);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        @keyframes confete {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-200px) rotate(720deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .animar-pulsar {
+            animation: pulsar 1.8s ease-in-out infinite;
+        }
+        .animar-balancar {
+            animation: balancar 2s ease-in-out infinite;
+        }
+        .animar-piscar {
+            animation: piscar 1.2s ease-in-out infinite;
+        }
+        .animar-vibrar {
+            animation: vibrar 0.5s ease-in-out;
+        }
+        .animar-flutuar {
+            animation: flutuar 3s ease-in-out infinite;
+        }
+        .animar-brilhar {
+            animation: brilhar 2.5s ease-in-out infinite;
+        }
+        .animar-estourar {
+            animation: estourar 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .animar-deslizar {
+            animation: deslizarCima 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .animar-deslizar-lado {
+            animation: deslizarLado 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+        .delay-4 {
+            animation-delay: 0.4s;
+        }
+        .delay-5 {
+            animation-delay: 0.5s;
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: var(--preto);
+            padding: 16px 0 12px;
+            border-bottom: 4px solid var(--amarelo);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(17, 17, 17, 0.8);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .logo-icone {
+            font-size: 2.4rem;
+            line-height: 1;
+            animation: flutuar 3s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            background: var(--roxo);
+            padding: 6px 14px 6px 10px;
+            border-radius: 60px;
+            border: 3px solid var(--amarelo);
+        }
+        .logo-icone span {
+            font-size: 1.6rem;
+        }
+
+        .logo-texto {
+            font-weight: 800;
+            font-size: 1.5rem;
+            line-height: 1.1;
+            color: var(--branco);
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+        .logo-texto .rosa {
+            color: var(--rosa);
+        }
+        .logo-texto .amarelo {
+            color: var(--amarelo);
+        }
+        .logo-texto .roxo {
+            color: var(--roxo-claro);
+        }
+        .logo-texto small {
+            display: block;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--amarelo);
+            font-weight: 400;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 3px solid var(--preto);
+            cursor: pointer;
+            transition: all var(--transicao);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--branco);
+            color: var(--preto);
+        }
+        .btn:hover {
+            transform: scale(1.06) translateY(-2px);
+            box-shadow: var(--sombra-forte);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-rosa {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-rosa:hover {
+            background: var(--roxo);
+            border-color: var(--rosa);
+        }
+
+        .btn-amarelo {
+            background: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--preto);
+        }
+        .btn-amarelo:hover {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+
+        .btn-roxo {
+            background: var(--roxo);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-roxo:hover {
+            background: var(--rosa);
+            border-color: var(--roxo);
+        }
+
+        .btn-preto {
+            background: var(--preto);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-preto:hover {
+            background: var(--roxo);
+            border-color: var(--amarelo);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-outline:hover {
+            background: var(--amarelo);
+            color: var(--preto);
+        }
+
+        .btn-pequeno {
+            padding: 6px 16px;
+            font-size: 0.75rem;
+        }
+
+        /* ===== STORY HIGHLIGHTS ===== */
+        .stories {
+            background: var(--preto);
+            padding: 16px 0 12px;
+            border-bottom: 2px solid var(--roxo);
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+            position: sticky;
+            top: 80px;
+            z-index: 90;
+        }
+        .stories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .stories-inner {
+            display: flex;
+            gap: 16px;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .story-item {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all var(--transicao);
+            flex-shrink: 0;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+        }
+        .story-item:hover {
+            transform: scale(1.05);
+            border-color: var(--amarelo);
+            background: rgba(255, 212, 0, 0.1);
+        }
+        .story-item .icone {
+            font-size: 1.8rem;
+            line-height: 1;
+            filter: drop-shadow(0 2px 8px rgba(255, 45, 149, 0.3));
+        }
+        .story-item .nome {
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--branco);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .story-item.ativo {
+            border-color: var(--amarelo);
+            background: rgba(255, 212, 0, 0.15);
+        }
+
+        /* ===== BIO / SLOGAN ===== */
+        .bio-section {
+            background: linear-gradient(135deg, var(--roxo), var(--preto));
+            padding: 30px 20px;
+            border-bottom: 4px solid var(--amarelo);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .bio-section::before {
+            content: '💬';
+            position: absolute;
+            font-size: 10rem;
+            right: -20px;
+            bottom: -30px;
+            opacity: 0.08;
+            transform: rotate(-10deg);
+        }
+        .bio-section::after {
+            content: '👀';
+            position: absolute;
+            font-size: 6rem;
+            left: -10px;
+            top: -20px;
+            opacity: 0.08;
+            transform: rotate(15deg);
+        }
+
+        .bio-section .slogan {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--amarelo);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 20px rgba(255, 212, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+        .bio-section .slogan .rosa {
+            color: var(--rosa);
+        }
+        .bio-section .bio-texto {
+            font-size: 1.1rem;
+            color: var(--branco);
+            max-width: 700px;
+            margin: 10px auto 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+        .bio-section .bio-texto span {
+            display: inline-block;
+            background: rgba(255, 212, 0, 0.15);
+            padding: 2px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--amarelo);
+        }
+
+        /* ===== FOFOQUINHA DO DIA ===== */
+        .fofoca-dia {
+            padding: 30px 0;
+            background: linear-gradient(180deg, var(--preto), #1a1a1a);
+            border-bottom: 3px dashed var(--roxo);
+        }
+
+        .fofoca-dia .titulo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--amarelo);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .fofoca-dia .titulo .emoji {
+            animation: girarSuave 6s linear infinite;
+            display: inline-block;
+        }
+        .fofoca-dia .subtitulo {
+            text-align: center;
+            color: var(--rosa);
+            font-size: 0.95rem;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+
+        .video-destaque-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: var(--borda-radius);
+            overflow: hidden;
+            box-shadow: var(--sombra-forte);
+            border: 3px solid var(--amarelo);
+            transition: all var(--transicao);
+            background: var(--preto);
+        }
+        .video-destaque-wrapper:hover {
+            border-color: var(--rosa);
+            box-shadow: 0 0 40px rgba(255, 45, 149, 0.25);
+        }
+
+        .video-destaque-wrapper .player-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: var(--preto);
+        }
+        .video-destaque-wrapper .player-wrapper iframe,
+        .video-destaque-wrapper .player-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--preto);
+        }
+
+        .video-destaque-wrapper .info-destaque {
+            padding: 16px 20px 20px;
+            background: var(--preto);
+        }
+        .video-destaque-wrapper .info-destaque h3 {
+            color: var(--amarelo);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .video-destaque-wrapper .info-destaque p {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .vazio-destaque {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+            border: 3px dashed var(--roxo);
+            border-radius: var(--borda-radius);
+            background: rgba(111, 45, 168, 0.08);
+        }
+        .vazio-destaque .grande {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        /* ===== LISTA DE VÍDEOS ===== */
+        .videos-section {
+            padding: 30px 0 50px;
+            background: var(--preto);
+        }
+
+        .videos-section .cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .videos-section .cabecalho h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--rosa);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .videos-section .cabecalho h2 .amarelo {
+            color: var(--amarelo);
+        }
+
+        .grid-videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .card-video {
+            background: #1a1a1a;
+            border-radius: var(--borda-radius);
+            overflow: hidden;
+            border: 2px solid var(--roxo);
+            transition: all var(--transicao);
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .card-video:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--amarelo);
+            box-shadow: 0 12px 40px rgba(255, 212, 0, 0.15);
+        }
+        .card-video .thumb {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            background: var(--preto);
+            overflow: hidden;
+        }
+        .card-video .thumb iframe,
+        .card-video .thumb video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            object-fit: cover;
+            background: var(--preto);
+        }
+        .card-video .thumb .play-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(17, 17, 17, 0.5);
+            transition: all var(--transicao);
+        }
+        .card-video .thumb .play-overlay .play-btn {
+            font-size: 4rem;
+            filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.4));
+            transition: all var(--transicao);
+            animation: pulsar 2s ease-in-out infinite;
+        }
+        .card-video:hover .thumb .play-overlay .play-btn {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 30px rgba(255, 45, 149, 0.6));
+        }
+
+        .card-video .info {
+            padding: 14px 16px 16px;
+        }
+        .card-video .info h4 {
+            color: var(--branco);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-video .info .meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 6px;
+        }
+        .card-video .info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-video .info .meta .curtidas {
+            color: var(--rosa);
+        }
+        .card-video .info .meta .comentarios {
+            color: var(--amarelo);
+        }
+
+        /* ===== MODAL DO VÍDEO ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 17, 17, 0.92);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: deslizarCima 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.aberto {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--preto);
+            border-radius: var(--borda-radius);
+            max-width: 860px;
+            width: 100%;
+            max-height: 98vh;
+            overflow-y: auto;
+            border: 3px solid var(--amarelo);
+            box-shadow: var(--sombra-forte);
+            position: relative;
+            animation: estourar 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--rosa);
+            border-radius: 10px;
+        }
+
+        .modal-fechar {
+            position: sticky;
+            top: 12px;
+            right: 12px;
+            float: right;
+            background: var(--rosa);
+            color: var(--branco);
+            border: 2px solid var(--amarelo);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transicao);
+            margin: 12px 12px 0 0;
+        }
+        .modal-fechar:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: var(--roxo);
+            border-color: var(--rosa);
+        }
+
+        .modal-player {
+            padding: 0 20px 16px;
+            clear: both;
+        }
+        .modal-player .player-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--preto);
+            border: 2px solid var(--roxo);
+        }
+        .modal-player .player-wrapper iframe,
+        .modal-player .player-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--preto);
+        }
+
+        .modal-info {
+            padding: 0 20px 20px;
+        }
+        .modal-info h2 {
+            color: var(--amarelo);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+        .modal-info .desc {
+            color: #bbb;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .modal-acoes {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding: 12px 0 16px;
+            border-top: 2px solid #2a2a2a;
+            border-bottom: 2px solid #2a2a2a;
+            margin: 8px 0 16px;
+        }
+        .modal-acoes .acao-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 60px;
+            border: 2px solid #333;
+            background: transparent;
+            color: var(--branco);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transicao);
+        }
+        .modal-acoes .acao-btn:hover {
+            transform: scale(1.05);
+        }
+        .modal-acoes .acao-btn.curtir {
+            border-color: var(--rosa);
+        }
+        .modal-acoes .acao-btn.curtir:hover,
+        .modal-acoes .acao-btn.curtir.curtido {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .modal-acoes .acao-btn.comentar {
+            border-color: var(--amarelo);
+        }
+        .modal-acoes .acao-btn.comentar:hover {
+            background: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--preto);
+        }
+        .modal-acoes .acao-btn.compartilhar {
+            border-color: var(--roxo);
+        }
+        .modal-acoes .acao-btn.compartilhar:hover {
+            background: var(--roxo);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .modal-acoes .contador {
+            font-size: 0.85rem;
+            color: #888;
+            margin-left: 4px;
+        }
+
+        .modal-comentarios {
+            margin-top: 12px;
+        }
+        .modal-comentarios h4 {
+            color: var(--amarelo);
+            font-size: 1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-comentarios .lista-comentarios {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            padding-right: 4px;
+        }
+        .modal-comentarios .lista-comentarios .comentario {
+            padding: 8px 12px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--roxo);
+        }
+        .modal-comentarios .lista-comentarios .comentario .nome {
+            font-weight: 700;
+            color: var(--rosa);
+            font-size: 0.85rem;
+        }
+        .modal-comentarios .lista-comentarios .comentario .texto {
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+        .modal-comentarios .lista-comentarios .comentario .data {
+            font-size: 0.65rem;
+            color: #666;
+        }
+
+        .form-comentario {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .form-comentario input {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px 16px;
+            border-radius: 60px;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            color: var(--branco);
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all var(--transicao);
+        }
+        .form-comentario input:focus {
+            border-color: var(--amarelo);
+            box-shadow: 0 0 20px rgba(255, 212, 0, 0.1);
+        }
+        .form-comentario input::placeholder {
+            color: #666;
+        }
+        .form-comentario .btn-enviar {
+            padding: 10px 24px;
+            border-radius: 60px;
+            border: 2px solid var(--amarelo);
+            background: var(--amarelo);
+            color: var(--preto);
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transicao);
+        }
+        .form-comentario .btn-enviar:hover {
+            transform: scale(1.05);
+            background: var(--rosa);
+            border-color: var(--rosa);
+            color: var(--branco);
+        }
+
+        /* ===== POPUP FOFOQUINHA DO DIA ===== */
+        .popup-fofoca {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            max-width: 360px;
+            width: calc(100% - 40px);
+            background: var(--preto);
+            border-radius: var(--borda-radius);
+            border: 3px solid var(--amarelo);
+            box-shadow: var(--sombra-forte);
+            padding: 20px 20px 16px;
+            animation: deslizarCima 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+            transform-origin: bottom right;
+        }
+        .popup-fofoca.visivel {
+            display: block;
+        }
+        .popup-fofoca .cabeca {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .popup-fofoca .cabeca .titulo {
+            font-weight: 800;
+            color: var(--amarelo);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .popup-fofoca .cabeca .fechar-popup {
+            background: transparent;
+            border: none;
+            color: #666;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all var(--transicao);
+            padding: 0 4px;
+        }
+        .popup-fofoca .cabeca .fechar-popup:hover {
+            color: var(--rosa);
+            transform: rotate(90deg);
+        }
+        .popup-fofoca .conteudo {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            cursor: pointer;
+        }
+        .popup-fofoca .conteudo .mini-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background: #1a1a1a;
+            flex-shrink: 0;
+            overflow: hidden;
+            border: 2px solid var(--roxo);
+        }
+        .popup-fofoca .conteudo .mini-thumb img,
+        .popup-fofoca .conteudo .mini-thumb video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .popup-fofoca .conteudo .info {
+            flex: 1;
+        }
+        .popup-fofoca .conteudo .info .nome {
+            font-weight: 700;
+            color: var(--branco);
+            font-size: 0.9rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .popup-fofoca .conteudo .info .badge {
+            font-size: 0.7rem;
+            color: var(--amarelo);
+            background: rgba(255, 212, 0, 0.15);
+            padding: 2px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--amarelo);
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--preto);
+            border-top: 4px solid var(--roxo);
+            padding: 30px 20px 20px;
+            text-align: center;
+        }
+        .footer .social {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .footer .social a {
+            color: var(--branco);
+            font-size: 1.6rem;
+            transition: all var(--transicao);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .footer .social a:hover {
+            color: var(--amarelo);
+            transform: scale(1.1);
+        }
+        .footer .copy {
+            color: #555;
+            font-size: 0.8rem;
+        }
+        .footer .copy .rosa {
+            color: var(--rosa);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--roxo);
+            color: var(--branco);
+            padding: 12px 28px;
+            border-radius: 60px;
+            border: 2px solid var(--amarelo);
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 2000;
+            box-shadow: var(--sombra-forte);
+            animation: deslizarCima 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+            gap: 10px;
+            align-items: center;
+        }
+        .toast.visivel {
+            display: flex;
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 992px) {
+            .logo-texto {
+                font-size: 1.2rem;
+            }
+            .logo-icone {
+                font-size: 1.8rem;
+                padding: 4px 12px 4px 8px;
+            }
+            .bio-section .slogan {
+                font-size: 1.6rem;
+            }
+            .bio-section .bio-texto {
+                font-size: 1rem;
+            }
+            .fofoca-dia .titulo {
+                font-size: 1.4rem;
+            }
+            .videos-section .cabecalho h2 {
+                font-size: 1.4rem;
+            }
+            .grid-videos {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .logo-texto {
+                font-size: 1rem;
+            }
+            .logo-icone {
+                font-size: 1.5rem;
+                padding: 4px 10px 4px 6px;
+            }
+            .header-actions .btn {
+                padding: 6px 14px;
+                font-size: 0.7rem;
+            }
+            .stories {
+                top: 110px;
+                padding: 10px 0;
+            }
+            .story-item {
+                padding: 2px 10px;
+            }
+            .story-item .icone {
+                font-size: 1.4rem;
+            }
+            .story-item .nome {
+                font-size: 0.55rem;
+            }
+            .bio-section {
+                padding: 20px 16px;
+            }
+            .bio-section .slogan {
+                font-size: 1.3rem;
+            }
+            .bio-section .bio-texto {
+                font-size: 0.9rem;
+            }
+            .fofoca-dia .titulo {
+                font-size: 1.2rem;
+                gap: 6px;
+            }
+            .video-destaque-wrapper .info-destaque h3 {
+                font-size: 1rem;
+            }
+            .grid-videos {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .card-video .info h4 {
+                font-size: 0.85rem;
+            }
+            .card-video .info .meta {
+                font-size: 0.7rem;
+                gap: 10px;
+            }
+            .modal-content {
+                max-height: 96vh;
+                border-width: 2px;
+            }
+            .modal-player {
+                padding: 0 12px 12px;
+            }
+            .modal-info {
+                padding: 0 12px 16px;
+            }
+            .modal-info h2 {
+                font-size: 1.1rem;
+            }
+            .modal-acoes {
+                gap: 8px;
+                padding: 10px 0 12px;
+            }
+            .modal-acoes .acao-btn {
+                padding: 6px 14px;
+                font-size: 0.8rem;
+            }
+            .popup-fofoca {
+                bottom: 16px;
+                right: 16px;
+                max-width: 300px;
+                padding: 14px 14px 12px;
+            }
+            .popup-fofoca .conteudo .mini-thumb {
+                width: 56px;
+                height: 56px;
+            }
+            .popup-fofoca .conteudo .info .nome {
+                font-size: 0.8rem;
+            }
+            .toast {
+                font-size: 0.8rem;
+                padding: 10px 20px;
+                bottom: 80px;
+                max-width: 90%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 12px;
+            }
+            .header {
+                padding: 10px 0 8px;
+            }
+            .logo-icone {
+                font-size: 1.2rem;
+                padding: 3px 8px 3px 5px;
+                border-width: 2px;
+            }
+            .logo-icone span {
+                font-size: 1rem;
+            }
+            .logo-texto {
+                font-size: 0.85rem;
+            }
+            .logo-texto small {
+                font-size: 0.5rem;
+            }
+            .header-actions .btn {
+                padding: 4px 10px;
+                font-size: 0.6rem;
+                border-width: 2px;
+            }
+            .stories {
+                top: 96px;
+                padding: 6px 0;
+            }
+            .story-item {
+                padding: 2px 8px;
+                gap: 2px;
+            }
+            .story-item .icone {
+                font-size: 1.2rem;
+            }
+            .story-item .nome {
+                font-size: 0.5rem;
+            }
+            .bio-section .slogan {
+                font-size: 1.1rem;
+            }
+            .bio-section .bio-texto {
+                font-size: 0.8rem;
+            }
+            .fofoca-dia {
+                padding: 20px 0;
+            }
+            .fofoca-dia .titulo {
+                font-size: 1rem;
+            }
+            .fofoca-dia .subtitulo {
+                font-size: 0.8rem;
+                margin-bottom: 16px;
+            }
+            .grid-videos {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .card-video .info {
+                padding: 10px 10px 12px;
+            }
+            .card-video .info h4 {
+                font-size: 0.75rem;
+            }
+            .card-video .info .meta {
+                font-size: 0.6rem;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .modal-fechar {
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
+                margin: 8px 8px 0 0;
+            }
+            .modal-info h2 {
+                font-size: 0.95rem;
+            }
+            .modal-acoes .acao-btn {
+                padding: 4px 12px;
+                font-size: 0.7rem;
+                gap: 4px;
+            }
+            .form-comentario input {
+                font-size: 0.8rem;
+                padding: 8px 12px;
+                min-width: 100px;
+            }
+            .form-comentario .btn-enviar {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .popup-fofoca {
+                max-width: 260px;
+                padding: 12px 12px 10px;
+                bottom: 12px;
+                right: 12px;
+            }
+            .popup-fofoca .conteudo .mini-thumb {
+                width: 48px;
+                height: 48px;
+            }
+            .popup-fofoca .conteudo .info .nome {
+                font-size: 0.7rem;
+            }
+            .popup-fofoca .conteudo .info .badge {
+                font-size: 0.6rem;
+                padding: 1px 8px;
+            }
+            .popup-fofoca .cabeca .titulo {
+                font-size: 0.8rem;
+            }
+            .footer .social a {
+                font-size: 0.85rem;
+            }
+            .footer .copy {
+                font-size: 0.65rem;
+            }
+            .toast {
+                font-size: 0.7rem;
+                padding: 8px 16px;
+                bottom: 70px;
+                max-width: 95%;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .grid-videos {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .logo-texto {
+                font-size: 0.75rem;
+            }
+            .header-actions .btn {
+                font-size: 0.55rem;
+                padding: 3px 8px;
+            }
+        }
+
+        /* ===== UTILITÁRIOS ===== */
+        .text-center {
+            text-align: center;
+        }
+        .mt-12 {
+            margin-top: 12px;
+        }
+        .mt-20 {
+            margin-top: 20px;
+        }
+        .gap-8 {
+            gap: 8px;
+        }
+        .flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* ===== LOADING ===== */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--amarelo);
+            border-radius: 50%;
+            animation: girarSuave 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <span id="toastMsg">✅ Fofoca enviada!</span>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header" id="header">
+        <div class="container header-inner">
+            <a class="logo" href="#" id="logoLink">
+                <div class="logo-icone animar-flutuar">
+                    <span>👄</span>
+                    <span>💬</span>
+                    <span>🏘️</span>
+                </div>
+                <div class="logo-texto" id="siteNome">
+                    FOFOCA
+                    <small class="amarelo">DA MINHA RUA</small>
+                </div>
+            </a>
+            <div class="header-actions">
+                <a href="#videos" class="btn btn-rosa btn-pequeno">📹 Vídeos</a>
+                <a href="#fofoca-dia" class="btn btn-amarelo btn-pequeno">⭐ Destaque</a>
+                <a href="admin.html" class="btn btn-outline btn-pequeno" target="_blank">🔐 Admin</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== STORIES ===== -->
+    <nav class="stories" id="storiesNav">
+        <div class="stories-inner">
+            <div class="story-item ativo" data-tab="todas">
+                <span class="icone">🔥</span>
+                <span class="nome">Todas</span>
+            </div>
+            <div class="story-item" data-tab="fofocas">
+                <span class="icone">👀</span>
+                <span class="nome">Fofocas</span>
+            </div>
+            <div class="story-item" data-tab="envie">
+                <span class="icone">📩</span>
+                <span class="nome">Envie a sua</span>
+            </div>
+            <div class="story-item" data-tab="regras">
+                <span class="icone">📋</span>
+                <span class="nome">Regras</span>
+            </div>
+            <div class="story-item" data-tab="sobre">
+                <span class="icone">💖</span>
+                <span class="nome">Sobre nós</span>
+            </div>
+            <div class="story-item" data-tab="videos">
+                <span class="icone">🎬</span>
+                <span class="nome">Vídeos</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== BIO ===== -->
+    <section class="bio-section" id="bioSection">
+        <div class="container">
+            <div class="slogan animar-piscar">
+                💋 Todo mundo tem uma <span class="rosa">fofoca</span> pra contar!
+            </div>
+            <div class="bio-texto" id="bioTexto">
+                <span>💬 Da sua rua, família, trabalho ou de quem você quiser 👀</span>
+                <br />
+                <span>📩 Mande sua fofoca no direct &nbsp; 🔒 Anônimo é garantido!</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOFOQUINHA DO DIA ===== -->
+    <section class="fofoca-dia" id="fofoca-dia">
+        <div class="container">
+            <div class="titulo animar-balancar">
+                <span class="emoji">⭐</span>
+                FOFOCA DO DIA
+                <span class="emoji">⭐</span>
+            </div>
+            <div class="subtitulo">👇 A fofoca mais quente do momento!</div>
+
+            <div id="destaqueContainer">
+                <!-- será preenchido via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LISTA DE VÍDEOS ===== -->
+    <section class="videos-section" id="videos">
+        <div class="container">
+            <div class="cabecalho">
+                <h2>
+                    📹 <span class="amarelo">Fofocas</span> em vídeo
+                </h2>
+                <span style="color:#666;font-size:0.85rem;" id="totalVideos">0 vídeos</span>
+            </div>
+            <div class="grid-videos" id="gridVideos">
+                <!-- será preenchido via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="social">
+                <a href="#" target="_blank">📸 Instagram</a>
+                <a href="#" target="_blank">📹 YouTube</a>
+                <a href="#" target="_blank">🐦 Twitter</a>
+                <a href="#" target="_blank">📧 Email</a>
+            </div>
+            <div class="copy">
+                © 2026 <span class="rosa">Fofoca da Minha Rua</span> — Todo mundo tem uma fofoca pra contar! 💋
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== MODAL DO VÍDEO ===== -->
+    <div class="modal-overlay" id="modalVideo">
+        <div class="modal-content" id="modalContent">
+            <button class="modal-fechar" id="modalFechar" aria-label="Fechar">✕</button>
+            <div class="modal-player" id="modalPlayer">
+                <div class="player-wrapper" id="modalPlayerWrapper">
+                    <!-- iframe ou video será injetado -->
+                </div>
+            </div>
+            <div class="modal-info" id="modalInfo">
+                <h2 id="modalTitulo">Título do vídeo</h2>
+                <div class="desc" id="modalDesc">Descrição da fofoca...</div>
+                <div class="modal-acoes" id="modalAcoes">
+                    <button class="acao-btn curtir" id="btnCurtir" data-id="">
+                        ❤️ <span class="contador" id="contCurtidas">0</span>
+                    </button>
+                    <button class="acao-btn comentar" id="btnComentar">
+                        💬 <span class="contador" id="contComentarios">0</span>
+                    </button>
+                    <button class="acao-btn compartilhar" id="btnCompartilhar">
+                        🔗 Compartilhar
+                    </button>
+                </div>
+                <div class="modal-comentarios">
+                    <h4>💬 Comentários</h4>
+                    <div class="lista-comentarios" id="listaComentarios">
+                        <!-- comentários via JS -->
+                    </div>
+                    <div class="form-comentario">
+                        <input type="text" id="inputComentario" placeholder="Seu comentário..." maxlength="200" />
+                        <button class="btn-enviar" id="btnEnviarComentario">Enviar 💬</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== POPUP FOFOQUINHA DO DIA ===== -->
+    <div class="popup-fofoca" id="popupFofoca">
+        <div class="cabeca">
+            <span class="titulo">⭐ Fofoca do Dia</span>
+            <button class="fechar-popup" id="fecharPopup" aria-label="Fechar">✕</button>
+        </div>
+        <div class="conteudo" id="popupConteudo">
+            <div class="mini-thumb" id="popupThumb">
+                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--roxo);color:var(--amarelo);font-size:2rem;">🎬</div>
+            </div>
+            <div class="info">
+                <div class="nome" id="popupTitulo">Carregando...</div>
+                <span class="badge">🔥 Quente</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  DATA LAYER
+        // ============================================================
+        const STORAGE_KEY = 'fofoca_data';
+
+        function getDefaultData() {
+            return {
+                siteNome: 'FOFOCA DA MINHA RUA',
+                bio: '💬 Da sua rua, família, trabalho ou de quem você quiser 👀<br /><span>📩 Mande sua fofoca no direct &nbsp; 🔒 Anônimo é garantido!</span>',
+                videos: [],
+                destaqueId: null, // id do vídeo em destaque
+                popupAtivo: false,
+                popupVideoId: null,
+            };
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    // Garante que todos os campos existam
+                    const def = getDefaultData();
+                    for (const k in def) {
+                        if (!(k in parsed)) parsed[k] = def[k];
+                    }
+                    return parsed;
+                }
+            } catch (_) { /* ignora */ }
+            return getDefaultData();
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ============================================================
+        //  HELPERS
+        // ============================================================
+        function gerarId() {
+            return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+        }
+
+        function slugify(texto) {
+            return texto
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '') || 'video';
+        }
+
+        function formatarData(ts) {
+            const d = new Date(ts);
+            return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function toast(msg, duracao = 3000) {
+            const el = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            if (!el || !msgEl) return;
+            msgEl.textContent = msg;
+            el.classList.add('visivel');
+            clearTimeout(el._timeout);
+            el._timeout = setTimeout(() => el.classList.remove('visivel'), duracao);
+        }
+
+        // ============================================================
+        //  RENDER
+        // ============================================================
+        let dados = loadData();
+        let videoAtualId = null;
+
+        function renderSite() {
+            // Nome do site
+            const nomeEl = document.getElementById('siteNome');
+            if (nomeEl) {
+                // Mantém o formato com "FOFOCA" + "DA MINHA RUA"
+                nomeEl.innerHTML = `FOFOCA <small class="amarelo">DA MINHA RUA</small>`;
+            }
+
+            // Bio
+            const bioEl = document.getElementById('bioTexto');
+            if (bioEl && dados.bio) {
+                bioEl.innerHTML = dados.bio;
+            }
+
+            // Destaque
+            renderDestaque();
+
+            // Lista de vídeos
+            renderVideos();
+
+            // Popup
+            renderPopup();
+
+            // Total
+            const totalEl = document.getElementById('totalVideos');
+            if (totalEl) {
+                totalEl.textContent = dados.videos.length + ' vídeos';
+            }
+        }
+
+        function renderDestaque() {
+            const container = document.getElementById('destaqueContainer');
+            if (!container) return;
+
+            if (!dados.destaqueId) {
+                container.innerHTML = `
+                    <div class="vazio-destaque animar-pulsar">
+                        <span class="grande">👀</span>
+                        <p style="font-size:1.2rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em destaque ainda!</p>
+                        <p style="color:#888;font-size:0.9rem;">O admin pode ativar uma no painel.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const video = dados.videos.find(v => v.id === dados.destaqueId);
+            if (!video) {
+                container.innerHTML = `
+                    <div class="vazio-destaque">
+                        <span class="grande">😅</span>
+                        <p style="color:#888;">A fofoca em destaque foi removida.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const playerHtml = video.tipo === 'youtube' ?
+                `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>` :
+                `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
+
+            container.innerHTML = `
+                <div class="video-destaque-wrapper animar-brilhar">
+                    <div class="player-wrapper">
+                        ${playerHtml}
+                    </div>
+                    <div class="info-destaque">
+                        <h3>🔥 ${video.titulo}</h3>
+                        <p>${video.descricao || '📢 Fofoca quente!'}</p>
+                        <div style="display:flex;gap:16px;margin-top:6px;font-size:0.8rem;color:#888;">
+                            <span>❤️ ${video.likes || 0}</span>
+                            <span>💬 ${(video.comentarios || []).length}</span>
+                            <span>📅 ${formatarData(video.data)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderVideos() {
+            const grid = document.getElementById('gridVideos');
+            if (!grid) return;
+
+            if (dados.videos.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#666;">
+                        <div style="font-size:4rem;margin-bottom:12px;">📭</div>
+                        <p style="font-size:1.2rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em vídeo ainda!</p>
+                        <p style="font-size:0.9rem;">Mande sua fofoca e ela pode aparecer aqui 👀</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = dados.videos.map(v => {
+                const thumbHtml = v.tipo === 'youtube' ?
+                    `<iframe src="${v.url}" allowfullscreen loading="lazy" title="${v.titulo}"></iframe>` :
+                    `<video src="${v.url}" preload="metadata" poster="${v.capa || ''}"></video>`;
+
+                return `
+                    <div class="card-video" data-id="${v.id}">
+                        <div class="thumb">
+                            ${thumbHtml}
+                            <div class="play-overlay">
+                                <span class="play-btn">▶️</span>
+                            </div>
+                        </div>
+                        <div class="info">
+                            <h4>${v.titulo}</h4>
+                            <div class="meta">
+                                <span class="curtidas">❤️ ${v.likes || 0}</span>
+                                <span class="comentarios">💬 ${(v.comentarios || []).length}</span>
+                                <span>📅 ${formatarData(v.data)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Click para abrir modal
+            grid.querySelectorAll('.card-video').forEach(el => {
+                el.addEventListener('click', () => {
+                    const id = el.dataset.id;
+                    if (id) abrirModal(id);
+                });
+            });
+        }
+
+        function renderPopup() {
+            const popup = document.getElementById('popupFofoca');
+            if (!popup) return;
+
+            if (!dados.popupAtivo || !dados.popupVideoId) {
+                popup.classList.remove('visivel');
+                return;
+            }
+
+            const video = dados.videos.find(v => v.id === dados.popupVideoId);
+            if (!video) {
+                popup.classList.remove('visivel');
+                return;
+            }
+
+            document.getElementById('popupTitulo').textContent = video.titulo;
+            document.getElementById('popupThumb').innerHTML = video.tipo === 'youtube' ?
+                `<iframe src="${video.url}" style="width:100%;height:100%;border:0;" loading="lazy"></iframe>` :
+                `<video src="${video.url}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>`;
+
+            popup.classList.add('visivel');
+
+            // Click no popup abre o vídeo
+            document.getElementById('popupConteudo').onclick = () => {
+                abrirModal(video.id);
+            };
+        }
+
+        // ============================================================
+        //  MODAL
+        // ============================================================
+        function abrirModal(id) {
+            const video = dados.videos.find(v => v.id === id);
+            if (!video) {
+                toast('❌ Vídeo não encontrado!');
+                return;
+            }
+
+            videoAtualId = id;
+
+            const overlay = document.getElementById('modalVideo');
+            const wrapper = document.getElementById('modalPlayerWrapper');
+            const titulo = document.getElementById('modalTitulo');
+            const desc = document.getElementById('modalDesc');
+            const curtidas = document.getElementById('contCurtidas');
+            const comentarios = document.getElementById('contComentarios');
+            const lista = document.getElementById('listaComentarios');
+            const btnCurtir = document.getElementById('btnCurtir');
+
+            // Player
+            const playerHtml = video.tipo === 'youtube' ?
+                `<iframe src="${video.url}" allowfullscreen title="${video.titulo}"></iframe>` :
+                `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
+            wrapper.innerHTML = playerHtml;
+
+            // Info
+            titulo.textContent = video.titulo;
+            desc.textContent = video.descricao || '📢 Fofoca da minha rua!';
+            curtidas.textContent = video.likes || 0;
+            comentarios.textContent = (video.comentarios || []).length;
+            btnCurtir.dataset.id = video.id;
+
+            // Comentários
+            renderComentarios(video);
+
+            // Overlay
+            overlay.classList.add('aberto');
+            document.body.style.overflow = 'hidden';
+
+            // Atualiza URL hash (único)
+            const slug = slugify(video.titulo);
+            window.location.hash = `video-${slug}`;
+        }
+
+        function renderComentarios(video) {
+            const lista = document.getElementById('listaComentarios');
+            const comentarios = video.comentarios || [];
+            if (comentarios.length === 0) {
+                lista.innerHTML = `<div style="color:#666;font-size:0.85rem;padding:8px 0;">Ainda não há comentários. Seja o primeiro! 💬</div>`;
+                return;
+            }
+            lista.innerHTML = comentarios.map(c => `
+                <div class="comentario">
+                    <div class="nome">${c.nome || 'Anônimo'}</div>
+                    <div class="texto">${c.texto}</div>
+                    <div class="data">${formatarData(c.data)}</div>
+                </div>
+            `).join('');
+        }
+
+        function fecharModal() {
+            const overlay = document.getElementById('modalVideo');
+            overlay.classList.remove('aberto');
+            document.body.style.overflow = '';
+            // Limpa hash se for de vídeo
+            if (window.location.hash.startsWith('#video-')) {
+                window.location.hash = '';
+            }
+            // Para vídeos
+            const wrapper = document.getElementById('modalPlayerWrapper');
+            wrapper.innerHTML = '';
+            videoAtualId = null;
+        }
+
+        // ============================================================
+        //  AÇÕES DO MODAL
+        // ============================================================
+        function curtirVideo(id) {
+            const video = dados.videos.find(v => v.id === id);
+            if (!video) return;
+            video.likes = (video.likes || 0) + 1;
+            saveData(dados);
+            // Atualiza UI
+            const cont = document.getElementById('contCurtidas');
+            if (cont) cont.textContent = video.likes;
+            const btn = document.getElementById('btnCurtir');
+            if (btn) btn.classList.add('curtido');
+            toast('❤️ Você curtiu essa fofoca!');
+            renderVideos();
+            renderDestaque();
+        }
+
+        function compartilharVideo(id) {
+            const video = dados.videos.find(v => v.id === id);
+            if (!video) return;
+            const slug = slugify(video.titulo);
+            const url = window.location.origin + window.location.pathname + `#video-${slug}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: video.titulo,
+                    text: '🔥 Fofoca da Minha Rua: ' + video.titulo,
+                    url: url,
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    toast('🔗 Link copiado! Compartilhe com os amigos!');
+                }).catch(() => {
+                    // Fallback
+                    const input = document.createElement('input');
+                    input.value = url;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(input);
+                    toast('🔗 Link copiado!');
+                });
+            }
+        }
+
+        function adicionarComentario(id) {
+            const input = document.getElementById('inputComentario');
+            const texto = input.value.trim();
+            if (!texto) {
+                toast('✏️ Escreva um comentário!');
+                return;
+            }
+            const video = dados.videos.find(v => v.id === id);
+            if (!video) return;
+            if (!video.comentarios) video.comentarios = [];
+            video.comentarios.push({
+                nome: 'Anônimo 👤',
+                texto: texto,
+                data: Date.now(),
+            });
+            saveData(dados);
+            input.value = '';
+            toast('💬 Comentário enviado!');
+            renderComentarios(video);
+            document.getElementById('contComentarios').textContent = video.comentarios.length;
+            renderVideos();
+            renderDestaque();
+        }
+
+        // ============================================================
+        //  STORIES / TABS
+        // ============================================================
+        function initStories() {
+            const items = document.querySelectorAll('.story-item');
+            const conteudos = {
+                'todas': () => {
+                    document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
+                },
+                'fofocas': () => {
+                    toast('👀 Fofocas quentes! Role os vídeos abaixo.');
+                    document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
+                },
+                'envie': () => {
+                    toast('📩 Mande sua fofoca pelo direct do Instagram!');
+                },
+                'regras': () => {
+                    toast('📋 Anonimato garantido! Sem fake news, só fofoca boa!');
+                },
+                'sobre': () => {
+                    toast('💖 Fofoca da Minha Rua — Todo mundo tem uma fofoca pra contar!');
+                },
+                'videos': () => {
+                    document.getElementById('videos').scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            items.forEach(item => {
+                item.addEventListener('click', () => {
+                    items.forEach(i => i.classList.remove('ativo'));
+                    item.classList.add('ativo');
+                    const tab = item.dataset.tab;
+                    if (tab && conteudos[tab]) {
+                        conteudos[tab]();
+                    }
+                });
+            });
+        }
+
+        // ============================================================
+        //  HASH ROUTING
+        // ============================================================
+        function handleHash() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#video-')) {
+                const slug = hash.replace('#video-', '');
+                // Procura vídeo pelo slug
+                const video = dados.videos.find(v => slugify(v.titulo) === slug);
+                if (video) {
+                    abrirModal(video.id);
+                } else {
+                    // Tenta por id
+                    const id = slug;
+                    const v = dados.videos.find(v => v.id === id);
+                    if (v) abrirModal(v.id);
+                }
+            }
+        }
+
+        // ============================================================
+        //  POPUP
+        // ============================================================
+        document.getElementById('fecharPopup')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('popupFofoca').classList.remove('visivel');
+        });
+
+        // ============================================================
+        //  EVENTOS
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSite();
+            initStories();
+
+            // Fechar modal
+            document.getElementById('modalFechar')?.addEventListener('click', fecharModal);
+            document.getElementById('modalVideo')?.addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) fecharModal();
+            });
+
+            // Curtir
+            document.getElementById('btnCurtir')?.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (id) curtirVideo(id);
+            });
+
+            // Compartilhar
+            document.getElementById('btnCompartilhar')?.addEventListener('click', function() {
+                if (videoAtualId) compartilharVideo(videoAtualId);
+            });
+
+            // Comentar
+            document.getElementById('btnEnviarComentario')?.addEventListener('click', function() {
+                if (videoAtualId) adicionarComentario(videoAtualId);
+            });
+            document.getElementById('inputComentario')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (videoAtualId) adicionarComentario(videoAtualId);
+                }
+            });
+
+            // Esc fecha modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') fecharModal();
+            });
+
+            // Hash
+            window.addEventListener('hashchange', handleHash);
+            handleHash();
+
+            // Botão "Comentar" no modal foca no input
+            document.getElementById('btnComentar')?.addEventListener('click', () => {
+                document.getElementById('inputComentario')?.focus();
+            });
+
+            // Atualiza a cada 10s (para sincronia entre abas)
+            setInterval(() => {
+                const novo = loadData();
+                // Só atualiza se houver mudança
+                if (JSON.stringify(novo) !== JSON.stringify(dados)) {
+                    dados = novo;
+                    renderSite();
+                }
+            }, 10000);
+        });
+
+        // ============================================================
+        //  EXPORTA PARA ADMIN (via localStorage)
+        // ============================================================
+        window.__fofoca = {
+            dados: () => loadData(),
+            salvar: (novos) => { dados = novos;
+                saveData(novos);
+                renderSite(); },
+            render: renderSite,
+        };
+
+        console.log('💋 Fofoca da Minha Rua — Todo mundo tem uma fofoca pra contar!');
+    </script>
+</body>
+</html>
