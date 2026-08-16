@@ -2,11 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Fofoca da Minha Rua</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="manifest" href="/manifest.json" />
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -27,6 +28,8 @@
             --sombra-forte: 0 12px 40px rgba(17, 17, 17, 0.35);
             --borda-radius: 24px;
             --transicao: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --glass-bg: rgba(17, 17, 17, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.12);
         }
 
         html {
@@ -40,26 +43,73 @@
             min-height: 100vh;
             overflow-x: hidden;
             line-height: 1.5;
+            position: relative;
+        }
+
+        /* ===== LIQUID GLASS BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, #6F2DA8 0%, #111111 70%);
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 70%, #FF2D95 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, #FFD400 0%, transparent 40%);
+            z-index: -1;
+            opacity: 0.3;
+            animation: ondaBg 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes ondaBg {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.25;
+            }
+            33% {
+                transform: translate(30px, -20px) scale(1.1);
+                opacity: 0.35;
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.9);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(10px, -10px) scale(1.05);
+                opacity: 0.3;
+            }
         }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--preto);
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(4px);
         }
         ::-webkit-scrollbar-thumb {
             background: var(--rosa);
             border-radius: 10px;
-            border: 2px solid var(--amarelo);
+            border: 1px solid var(--amarelo);
         }
         ::-webkit-scrollbar-thumb:hover {
             background: var(--roxo);
         }
 
-        /* ===== ANIMAÇÕES GLOBAIS ===== */
+        /* ===== ANIMAÇÕES ===== */
         @keyframes pulsar {
             0%,
             100% {
@@ -180,13 +230,13 @@
                 opacity: 1;
             }
         }
-        @keyframes confete {
+        @keyframes ondaGotas {
             0% {
-                transform: translateY(0) rotate(0deg) scale(1);
-                opacity: 1;
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.6;
             }
             100% {
-                transform: translateY(-200px) rotate(720deg) scale(0);
+                transform: translate(-50%, -50%) scale(2.5);
                 opacity: 0;
             }
         }
@@ -234,6 +284,23 @@
             animation-delay: 0.5s;
         }
 
+        /* ===== GLASS EFFECT ===== */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(1.2);
+            -webkit-backdrop-filter: blur(12px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-strong {
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(20px) saturate(1.4);
+            -webkit-backdrop-filter: blur(20px) saturate(1.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+        }
+
         /* ===== LAYOUT ===== */
         .container {
             max-width: 1200px;
@@ -243,13 +310,15 @@
 
         /* ===== HEADER ===== */
         .header {
-            background: var(--preto);
-            padding: 16px 0 12px;
-            border-bottom: 4px solid var(--amarelo);
+            padding: 12px 0 10px;
+            border-bottom: 2px solid rgba(255, 212, 0, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 30px rgba(17, 17, 17, 0.8);
+            background: rgba(17, 17, 17, 0.75);
+            backdrop-filter: blur(16px) saturate(1.3);
+            -webkit-backdrop-filter: blur(16px) saturate(1.3);
+            border-bottom: 1px solid rgba(255, 212, 0, 0.15);
         }
 
         .header-inner {
@@ -269,25 +338,23 @@
             flex-shrink: 0;
         }
 
-        .logo-icone {
-            font-size: 2.4rem;
-            line-height: 1;
-            animation: flutuar 3s ease-in-out infinite;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            background: var(--roxo);
-            padding: 6px 14px 6px 10px;
-            border-radius: 60px;
-            border: 3px solid var(--amarelo);
+        .logo-imagem {
+            height: 48px;
+            width: auto;
+            max-width: 180px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(255, 45, 149, 0.3));
+            transition: all var(--transicao);
+            border-radius: 12px;
         }
-        .logo-icone span {
-            font-size: 1.6rem;
+        .logo-imagem:hover {
+            transform: scale(1.04);
+            filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.4));
         }
 
         .logo-texto {
             font-weight: 800;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             line-height: 1.1;
             color: var(--branco);
             text-transform: uppercase;
@@ -304,7 +371,7 @@
         }
         .logo-texto small {
             display: block;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             letter-spacing: 2px;
             color: var(--amarelo);
             font-weight: 400;
@@ -321,12 +388,12 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 22px;
+            padding: 8px 18px;
             border-radius: 60px;
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.85rem;
-            border: 3px solid var(--preto);
+            font-size: 0.8rem;
+            border: 2px solid transparent;
             cursor: pointer;
             transition: all var(--transicao);
             text-decoration: none;
@@ -374,20 +441,11 @@
             border-color: var(--roxo);
         }
 
-        .btn-preto {
-            background: var(--preto);
-            color: var(--branco);
-            border-color: var(--amarelo);
-        }
-        .btn-preto:hover {
-            background: var(--roxo);
-            border-color: var(--amarelo);
-        }
-
         .btn-outline {
             background: transparent;
             color: var(--branco);
             border-color: var(--amarelo);
+            backdrop-filter: blur(4px);
         }
         .btn-outline:hover {
             background: var(--amarelo);
@@ -395,21 +453,23 @@
         }
 
         .btn-pequeno {
-            padding: 6px 16px;
-            font-size: 0.75rem;
+            padding: 6px 14px;
+            font-size: 0.7rem;
         }
 
-        /* ===== STORY HIGHLIGHTS ===== */
+        /* ===== STORIES ===== */
         .stories {
-            background: var(--preto);
-            padding: 16px 0 12px;
-            border-bottom: 2px solid var(--roxo);
+            padding: 12px 0 10px;
+            border-bottom: 1px solid rgba(111, 45, 168, 0.3);
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
             position: sticky;
-            top: 80px;
+            top: 74px;
             z-index: 90;
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         .stories::-webkit-scrollbar {
             display: none;
@@ -431,23 +491,23 @@
             cursor: pointer;
             transition: all var(--transicao);
             flex-shrink: 0;
-            padding: 4px 12px;
+            padding: 4px 14px;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid transparent;
         }
         .story-item:hover {
             transform: scale(1.05);
             border-color: var(--amarelo);
-            background: rgba(255, 212, 0, 0.1);
+            background: rgba(255, 212, 0, 0.08);
         }
         .story-item .icone {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             line-height: 1;
-            filter: drop-shadow(0 2px 8px rgba(255, 45, 149, 0.3));
+            filter: drop-shadow(0 2px 8px rgba(255, 45, 149, 0.2));
         }
         .story-item .nome {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--branco);
             text-transform: uppercase;
@@ -455,44 +515,46 @@
         }
         .story-item.ativo {
             border-color: var(--amarelo);
-            background: rgba(255, 212, 0, 0.15);
+            background: rgba(255, 212, 0, 0.12);
         }
 
-        /* ===== BIO / SLOGAN ===== */
+        /* ===== BIO ===== */
         .bio-section {
-            background: linear-gradient(135deg, var(--roxo), var(--preto));
-            padding: 30px 20px;
-            border-bottom: 4px solid var(--amarelo);
+            padding: 28px 20px;
+            border-bottom: 1px solid rgba(255, 212, 0, 0.15);
             text-align: center;
             position: relative;
             overflow: hidden;
+            background: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
         .bio-section::before {
             content: '💬';
             position: absolute;
-            font-size: 10rem;
+            font-size: 8rem;
             right: -20px;
             bottom: -30px;
-            opacity: 0.08;
+            opacity: 0.06;
             transform: rotate(-10deg);
         }
         .bio-section::after {
             content: '👀';
             position: absolute;
-            font-size: 6rem;
+            font-size: 5rem;
             left: -10px;
             top: -20px;
-            opacity: 0.08;
+            opacity: 0.06;
             transform: rotate(15deg);
         }
 
         .bio-section .slogan {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 800;
             color: var(--amarelo);
             text-transform: uppercase;
             letter-spacing: 1px;
-            text-shadow: 0 4px 20px rgba(255, 212, 0, 0.3);
+            text-shadow: 0 4px 20px rgba(255, 212, 0, 0.2);
             position: relative;
             z-index: 1;
         }
@@ -500,7 +562,7 @@
             color: var(--rosa);
         }
         .bio-section .bio-texto {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--branco);
             max-width: 700px;
             margin: 10px auto 0;
@@ -510,27 +572,30 @@
         }
         .bio-section .bio-texto span {
             display: inline-block;
-            background: rgba(255, 212, 0, 0.15);
-            padding: 2px 12px;
+            background: rgba(255, 212, 0, 0.08);
+            padding: 2px 14px;
             border-radius: 20px;
-            border: 1px solid var(--amarelo);
+            border: 1px solid rgba(255, 212, 0, 0.15);
+            backdrop-filter: blur(4px);
         }
 
         /* ===== FOFOQUINHA DO DIA ===== */
         .fofoca-dia {
-            padding: 30px 0;
-            background: linear-gradient(180deg, var(--preto), #1a1a1a);
-            border-bottom: 3px dashed var(--roxo);
+            padding: 28px 0;
+            border-bottom: 1px solid rgba(111, 45, 168, 0.2);
+            background: rgba(17, 17, 17, 0.3);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
         }
 
         .fofoca-dia .titulo {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: var(--amarelo);
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -544,8 +609,8 @@
         .fofoca-dia .subtitulo {
             text-align: center;
             color: var(--rosa);
-            font-size: 0.95rem;
-            margin-bottom: 24px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
             opacity: 0.9;
         }
 
@@ -555,13 +620,15 @@
             border-radius: var(--borda-radius);
             overflow: hidden;
             box-shadow: var(--sombra-forte);
-            border: 3px solid var(--amarelo);
+            border: 2px solid rgba(255, 212, 0, 0.25);
             transition: all var(--transicao);
-            background: var(--preto);
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
         .video-destaque-wrapper:hover {
             border-color: var(--rosa);
-            box-shadow: 0 0 40px rgba(255, 45, 149, 0.25);
+            box-shadow: 0 0 40px rgba(255, 45, 149, 0.15);
         }
 
         .video-destaque-wrapper .player-wrapper {
@@ -582,38 +649,43 @@
         }
 
         .video-destaque-wrapper .info-destaque {
-            padding: 16px 20px 20px;
-            background: var(--preto);
+            padding: 14px 20px 18px;
+            background: rgba(17, 17, 17, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .video-destaque-wrapper .info-destaque h3 {
             color: var(--amarelo);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
         }
         .video-destaque-wrapper .info-destaque p {
             color: #ccc;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-top: 4px;
         }
 
         .vazio-destaque {
             text-align: center;
-            padding: 50px 20px;
-            color: #666;
-            border: 3px dashed var(--roxo);
+            padding: 40px 20px;
+            color: #888;
+            border: 2px dashed rgba(111, 45, 168, 0.3);
             border-radius: var(--borda-radius);
-            background: rgba(111, 45, 168, 0.08);
+            background: rgba(111, 45, 168, 0.05);
+            backdrop-filter: blur(4px);
         }
         .vazio-destaque .grande {
-            font-size: 4rem;
+            font-size: 3.5rem;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
-        /* ===== LISTA DE VÍDEOS ===== */
+        /* ===== VÍDEOS ===== */
         .videos-section {
-            padding: 30px 0 50px;
-            background: var(--preto);
+            padding: 28px 0 50px;
+            background: rgba(17, 17, 17, 0.2);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         .videos-section .cabecalho {
@@ -622,10 +694,10 @@
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
         .videos-section .cabecalho h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: var(--rosa);
             text-transform: uppercase;
@@ -639,23 +711,25 @@
 
         .grid-videos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
             gap: 24px;
         }
 
         .card-video {
-            background: #1a1a1a;
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: var(--borda-radius);
             overflow: hidden;
-            border: 2px solid var(--roxo);
+            border: 1px solid rgba(111, 45, 168, 0.2);
             transition: all var(--transicao);
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .card-video:hover {
-            transform: translateY(-8px) scale(1.01);
+            transform: translateY(-6px) scale(1.01);
             border-color: var(--amarelo);
-            box-shadow: 0 12px 40px rgba(255, 212, 0, 0.15);
+            box-shadow: 0 12px 40px rgba(255, 212, 0, 0.08);
         }
         .card-video .thumb {
             position: relative;
@@ -681,26 +755,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(17, 17, 17, 0.5);
+            background: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             transition: all var(--transicao);
         }
         .card-video .thumb .play-overlay .play-btn {
-            font-size: 4rem;
-            filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.4));
+            font-size: 3.5rem;
+            filter: drop-shadow(0 4px 20px rgba(255, 212, 0, 0.3));
             transition: all var(--transicao);
             animation: pulsar 2s ease-in-out infinite;
         }
         .card-video:hover .thumb .play-overlay .play-btn {
             transform: scale(1.2);
-            filter: drop-shadow(0 4px 30px rgba(255, 45, 149, 0.6));
+            filter: drop-shadow(0 4px 30px rgba(255, 45, 149, 0.4));
         }
 
         .card-video .info {
-            padding: 14px 16px 16px;
+            padding: 12px 14px 14px;
         }
         .card-video .info h4 {
             color: var(--branco);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             margin-bottom: 4px;
             display: -webkit-box;
@@ -711,9 +787,9 @@
         .card-video .info .meta {
             display: flex;
             align-items: center;
-            gap: 16px;
-            font-size: 0.8rem;
-            color: #888;
+            gap: 14px;
+            font-size: 0.75rem;
+            color: #999;
             margin-top: 6px;
         }
         .card-video .info .meta span {
@@ -728,12 +804,13 @@
             color: var(--amarelo);
         }
 
-        /* ===== MODAL DO VÍDEO ===== */
+        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(17, 17, 17, 0.92);
-            backdrop-filter: blur(10px);
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
             display: none;
             align-items: center;
@@ -746,13 +823,15 @@
         }
 
         .modal-content {
-            background: var(--preto);
+            background: rgba(17, 17, 17, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-radius: var(--borda-radius);
             max-width: 860px;
             width: 100%;
             max-height: 98vh;
             overflow-y: auto;
-            border: 3px solid var(--amarelo);
+            border: 1px solid rgba(255, 212, 0, 0.15);
             box-shadow: var(--sombra-forte);
             position: relative;
             animation: estourar 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -774,9 +853,9 @@
             color: var(--branco);
             border: 2px solid var(--amarelo);
             border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.4rem;
+            width: 42px;
+            height: 42px;
+            font-size: 1.3rem;
             cursor: pointer;
             z-index: 10;
             display: flex;
@@ -784,6 +863,7 @@
             justify-content: center;
             transition: all var(--transicao);
             margin: 12px 12px 0 0;
+            backdrop-filter: blur(4px);
         }
         .modal-fechar:hover {
             transform: rotate(90deg) scale(1.1);
@@ -802,7 +882,7 @@
             border-radius: 16px;
             overflow: hidden;
             background: var(--preto);
-            border: 2px solid var(--roxo);
+            border: 1px solid rgba(111, 45, 168, 0.3);
         }
         .modal-player .player-wrapper iframe,
         .modal-player .player-wrapper video {
@@ -820,46 +900,47 @@
         }
         .modal-info h2 {
             color: var(--amarelo);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
             margin-bottom: 2px;
         }
         .modal-info .desc {
             color: #bbb;
-            font-size: 0.95rem;
-            margin-bottom: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
 
         .modal-acoes {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
             flex-wrap: wrap;
-            padding: 12px 0 16px;
-            border-top: 2px solid #2a2a2a;
-            border-bottom: 2px solid #2a2a2a;
-            margin: 8px 0 16px;
+            padding: 10px 0 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 6px 0 14px;
         }
         .modal-acoes .acao-btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 20px;
+            padding: 6px 18px;
             border-radius: 60px;
-            border: 2px solid #333;
-            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.04);
             color: var(--branco);
             font-family: 'Fredoka', sans-serif;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all var(--transicao);
+            backdrop-filter: blur(4px);
         }
         .modal-acoes .acao-btn:hover {
             transform: scale(1.05);
         }
         .modal-acoes .acao-btn.curtir {
-            border-color: var(--rosa);
+            border-color: rgba(255, 45, 149, 0.3);
         }
         .modal-acoes .acao-btn.curtir:hover,
         .modal-acoes .acao-btn.curtir.curtido {
@@ -868,7 +949,7 @@
             border-color: var(--amarelo);
         }
         .modal-acoes .acao-btn.comentar {
-            border-color: var(--amarelo);
+            border-color: rgba(255, 212, 0, 0.3);
         }
         .modal-acoes .acao-btn.comentar:hover {
             background: var(--amarelo);
@@ -876,7 +957,7 @@
             border-color: var(--preto);
         }
         .modal-acoes .acao-btn.compartilhar {
-            border-color: var(--roxo);
+            border-color: rgba(111, 45, 168, 0.3);
         }
         .modal-acoes .acao-btn.compartilhar:hover {
             background: var(--roxo);
@@ -884,46 +965,47 @@
             border-color: var(--amarelo);
         }
         .modal-acoes .contador {
-            font-size: 0.85rem;
-            color: #888;
-            margin-left: 4px;
+            font-size: 0.8rem;
+            color: #999;
+            margin-left: 2px;
         }
 
         .modal-comentarios {
-            margin-top: 12px;
+            margin-top: 10px;
         }
         .modal-comentarios h4 {
             color: var(--amarelo);
-            font-size: 1rem;
-            margin-bottom: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .modal-comentarios .lista-comentarios {
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             padding-right: 4px;
         }
         .modal-comentarios .lista-comentarios .comentario {
             padding: 8px 12px;
-            background: #1a1a1a;
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 12px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--roxo);
+            margin-bottom: 6px;
+            border-left: 2px solid var(--roxo);
+            backdrop-filter: blur(4px);
         }
         .modal-comentarios .lista-comentarios .comentario .nome {
             font-weight: 700;
             color: var(--rosa);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         .modal-comentarios .lista-comentarios .comentario .texto {
             color: #ddd;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .modal-comentarios .lista-comentarios .comentario .data {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #666;
         }
 
@@ -934,33 +1016,34 @@
         }
         .form-comentario input {
             flex: 1;
-            min-width: 140px;
-            padding: 10px 16px;
+            min-width: 130px;
+            padding: 8px 16px;
             border-radius: 60px;
-            border: 2px solid #333;
-            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             color: var(--branco);
             font-family: 'Fredoka', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             outline: none;
             transition: all var(--transicao);
+            backdrop-filter: blur(4px);
         }
         .form-comentario input:focus {
             border-color: var(--amarelo);
-            box-shadow: 0 0 20px rgba(255, 212, 0, 0.1);
+            box-shadow: 0 0 20px rgba(255, 212, 0, 0.05);
         }
         .form-comentario input::placeholder {
             color: #666;
         }
         .form-comentario .btn-enviar {
-            padding: 10px 24px;
+            padding: 8px 22px;
             border-radius: 60px;
-            border: 2px solid var(--amarelo);
+            border: 1px solid var(--amarelo);
             background: var(--amarelo);
             color: var(--preto);
             font-family: 'Fredoka', sans-serif;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all var(--transicao);
         }
@@ -971,19 +1054,21 @@
             color: var(--branco);
         }
 
-        /* ===== POPUP FOFOQUINHA DO DIA ===== */
+        /* ===== POPUP ===== */
         .popup-fofoca {
             position: fixed;
             bottom: 30px;
             right: 30px;
             z-index: 999;
-            max-width: 360px;
+            max-width: 340px;
             width: calc(100% - 40px);
-            background: var(--preto);
+            background: rgba(17, 17, 17, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: var(--borda-radius);
-            border: 3px solid var(--amarelo);
+            border: 1px solid rgba(255, 212, 0, 0.15);
             box-shadow: var(--sombra-forte);
-            padding: 20px 20px 16px;
+            padding: 16px 18px 14px;
             animation: deslizarCima 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: none;
             transform-origin: bottom right;
@@ -996,12 +1081,12 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .popup-fofoca .cabeca .titulo {
             font-weight: 800;
             color: var(--amarelo);
-            font-size: 1rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -1009,8 +1094,8 @@
         .popup-fofoca .cabeca .fechar-popup {
             background: transparent;
             border: none;
-            color: #666;
-            font-size: 1.4rem;
+            color: #888;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all var(--transicao);
             padding: 0 4px;
@@ -1026,13 +1111,13 @@
             cursor: pointer;
         }
         .popup-fofoca .conteudo .mini-thumb {
-            width: 70px;
-            height: 70px;
+            width: 64px;
+            height: 64px;
             border-radius: 12px;
-            background: #1a1a1a;
+            background: rgba(17, 17, 17, 0.8);
             flex-shrink: 0;
             overflow: hidden;
-            border: 2px solid var(--roxo);
+            border: 1px solid rgba(111, 45, 168, 0.3);
         }
         .popup-fofoca .conteudo .mini-thumb img,
         .popup-fofoca .conteudo .mini-thumb video {
@@ -1046,55 +1131,62 @@
         .popup-fofoca .conteudo .info .nome {
             font-weight: 700;
             color: var(--branco);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
         .popup-fofoca .conteudo .info .badge {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--amarelo);
-            background: rgba(255, 212, 0, 0.15);
+            background: rgba(255, 212, 0, 0.1);
             padding: 2px 12px;
             border-radius: 20px;
-            border: 1px solid var(--amarelo);
+            border: 1px solid rgba(255, 212, 0, 0.15);
             display: inline-block;
             margin-top: 4px;
         }
 
         /* ===== FOOTER ===== */
         .footer {
-            background: var(--preto);
-            border-top: 4px solid var(--roxo);
-            padding: 30px 20px 20px;
+            background: rgba(17, 17, 17, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(111, 45, 168, 0.2);
+            padding: 24px 20px 18px;
             text-align: center;
         }
         .footer .social {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
         .footer .social a {
             color: var(--branco);
-            font-size: 1.6rem;
             transition: all var(--transicao);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
+            padding: 4px 12px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
         }
         .footer .social a:hover {
             color: var(--amarelo);
-            transform: scale(1.1);
+            transform: scale(1.05);
+            border-color: rgba(255, 212, 0, 0.15);
+            background: rgba(255, 212, 0, 0.05);
         }
         .footer .copy {
-            color: #555;
-            font-size: 0.8rem;
+            color: #666;
+            font-size: 0.75rem;
         }
         .footer .copy .rosa {
             color: var(--rosa);
@@ -1106,19 +1198,22 @@
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--roxo);
+            background: rgba(111, 45, 168, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             color: var(--branco);
-            padding: 12px 28px;
+            padding: 10px 28px;
             border-radius: 60px;
-            border: 2px solid var(--amarelo);
+            border: 1px solid var(--amarelo);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             z-index: 2000;
             box-shadow: var(--sombra-forte);
             animation: deslizarCima 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             display: none;
             gap: 10px;
             align-items: center;
+            white-space: nowrap;
         }
         .toast.visivel {
             display: flex;
@@ -1126,18 +1221,15 @@
 
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 992px) {
-            .logo-texto {
-                font-size: 1.2rem;
-            }
-            .logo-icone {
-                font-size: 1.8rem;
-                padding: 4px 12px 4px 8px;
+            .logo-imagem {
+                height: 40px;
+                max-width: 140px;
             }
             .bio-section .slogan {
                 font-size: 1.6rem;
             }
             .bio-section .bio-texto {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
             .fofoca-dia .titulo {
                 font-size: 1.4rem;
@@ -1147,7 +1239,7 @@
             }
             .grid-videos {
                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 16px;
+                gap: 18px;
             }
         }
 
@@ -1155,44 +1247,45 @@
             .header-inner {
                 flex-direction: column;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
             }
-            .logo-texto {
-                font-size: 1rem;
-            }
-            .logo-icone {
-                font-size: 1.5rem;
-                padding: 4px 10px 4px 6px;
+            .logo-imagem {
+                height: 36px;
+                max-width: 120px;
             }
             .header-actions .btn {
-                padding: 6px 14px;
-                font-size: 0.7rem;
+                padding: 4px 12px;
+                font-size: 0.65rem;
             }
             .stories {
-                top: 110px;
-                padding: 10px 0;
+                top: 104px;
+                padding: 8px 0;
             }
             .story-item {
                 padding: 2px 10px;
             }
             .story-item .icone {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
             .story-item .nome {
-                font-size: 0.55rem;
+                font-size: 0.5rem;
             }
             .bio-section {
-                padding: 20px 16px;
+                padding: 18px 16px;
             }
             .bio-section .slogan {
                 font-size: 1.3rem;
             }
             .bio-section .bio-texto {
-                font-size: 0.9rem;
+                font-size: 0.85rem;
             }
             .fofoca-dia .titulo {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 gap: 6px;
+            }
+            .fofoca-dia .subtitulo {
+                font-size: 0.8rem;
+                margin-bottom: 14px;
             }
             .video-destaque-wrapper .info-destaque h3 {
                 font-size: 1rem;
@@ -1202,15 +1295,14 @@
                 gap: 12px;
             }
             .card-video .info h4 {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
             }
             .card-video .info .meta {
-                font-size: 0.7rem;
-                gap: 10px;
+                font-size: 0.65rem;
+                gap: 8px;
             }
             .modal-content {
                 max-height: 96vh;
-                border-width: 2px;
             }
             .modal-player {
                 padding: 0 12px 12px;
@@ -1219,34 +1311,41 @@
                 padding: 0 12px 16px;
             }
             .modal-info h2 {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .modal-acoes {
                 gap: 8px;
-                padding: 10px 0 12px;
+                padding: 8px 0 10px;
             }
             .modal-acoes .acao-btn {
-                padding: 6px 14px;
-                font-size: 0.8rem;
+                padding: 4px 12px;
+                font-size: 0.75rem;
             }
             .popup-fofoca {
                 bottom: 16px;
                 right: 16px;
-                max-width: 300px;
-                padding: 14px 14px 12px;
+                max-width: 280px;
+                padding: 12px 14px 10px;
             }
             .popup-fofoca .conteudo .mini-thumb {
-                width: 56px;
-                height: 56px;
+                width: 52px;
+                height: 52px;
             }
             .popup-fofoca .conteudo .info .nome {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
             .toast {
-                font-size: 0.8rem;
-                padding: 10px 20px;
-                bottom: 80px;
+                font-size: 0.75rem;
+                padding: 8px 18px;
+                bottom: 70px;
                 max-width: 90%;
+            }
+            .footer .social a {
+                font-size: 0.8rem;
+                padding: 2px 10px;
+            }
+            .footer .copy {
+                font-size: 0.65rem;
             }
         }
 
@@ -1255,125 +1354,113 @@
                 padding: 0 12px;
             }
             .header {
-                padding: 10px 0 8px;
+                padding: 8px 0 6px;
             }
-            .logo-icone {
-                font-size: 1.2rem;
-                padding: 3px 8px 3px 5px;
-                border-width: 2px;
-            }
-            .logo-icone span {
-                font-size: 1rem;
-            }
-            .logo-texto {
-                font-size: 0.85rem;
-            }
-            .logo-texto small {
-                font-size: 0.5rem;
+            .logo-imagem {
+                height: 30px;
+                max-width: 100px;
             }
             .header-actions .btn {
-                padding: 4px 10px;
-                font-size: 0.6rem;
-                border-width: 2px;
+                padding: 3px 10px;
+                font-size: 0.55rem;
+                border-width: 1px;
             }
             .stories {
-                top: 96px;
-                padding: 6px 0;
+                top: 88px;
+                padding: 4px 0;
             }
             .story-item {
                 padding: 2px 8px;
-                gap: 2px;
             }
             .story-item .icone {
-                font-size: 1.2rem;
-            }
-            .story-item .nome {
-                font-size: 0.5rem;
-            }
-            .bio-section .slogan {
                 font-size: 1.1rem;
             }
-            .bio-section .bio-texto {
-                font-size: 0.8rem;
+            .story-item .nome {
+                font-size: 0.45rem;
             }
-            .fofoca-dia {
-                padding: 20px 0;
-            }
-            .fofoca-dia .titulo {
+            .bio-section .slogan {
                 font-size: 1rem;
             }
+            .bio-section .bio-texto {
+                font-size: 0.75rem;
+            }
+            .fofoca-dia {
+                padding: 18px 0;
+            }
+            .fofoca-dia .titulo {
+                font-size: 0.95rem;
+            }
             .fofoca-dia .subtitulo {
-                font-size: 0.8rem;
-                margin-bottom: 16px;
+                font-size: 0.7rem;
             }
             .grid-videos {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
             }
             .card-video .info {
-                padding: 10px 10px 12px;
+                padding: 8px 10px 10px;
             }
             .card-video .info h4 {
-                font-size: 0.75rem;
+                font-size: 0.7rem;
             }
             .card-video .info .meta {
-                font-size: 0.6rem;
-                gap: 6px;
+                font-size: 0.55rem;
+                gap: 4px;
                 flex-wrap: wrap;
             }
             .modal-fechar {
-                width: 36px;
-                height: 36px;
-                font-size: 1.1rem;
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
                 margin: 8px 8px 0 0;
             }
             .modal-info h2 {
-                font-size: 0.95rem;
+                font-size: 0.9rem;
             }
             .modal-acoes .acao-btn {
-                padding: 4px 12px;
-                font-size: 0.7rem;
+                padding: 3px 10px;
+                font-size: 0.65rem;
                 gap: 4px;
             }
             .form-comentario input {
-                font-size: 0.8rem;
-                padding: 8px 12px;
-                min-width: 100px;
+                font-size: 0.75rem;
+                padding: 6px 12px;
+                min-width: 80px;
             }
             .form-comentario .btn-enviar {
-                padding: 8px 16px;
-                font-size: 0.8rem;
+                padding: 6px 14px;
+                font-size: 0.75rem;
             }
             .popup-fofoca {
-                max-width: 260px;
-                padding: 12px 12px 10px;
-                bottom: 12px;
-                right: 12px;
+                max-width: 240px;
+                padding: 10px 10px 8px;
+                bottom: 10px;
+                right: 10px;
             }
             .popup-fofoca .conteudo .mini-thumb {
-                width: 48px;
-                height: 48px;
+                width: 44px;
+                height: 44px;
             }
             .popup-fofoca .conteudo .info .nome {
-                font-size: 0.7rem;
-            }
-            .popup-fofoca .conteudo .info .badge {
-                font-size: 0.6rem;
-                padding: 1px 8px;
-            }
-            .popup-fofoca .cabeca .titulo {
-                font-size: 0.8rem;
-            }
-            .footer .social a {
-                font-size: 0.85rem;
-            }
-            .footer .copy {
                 font-size: 0.65rem;
             }
-            .toast {
+            .popup-fofoca .cabeca .titulo {
+                font-size: 0.75rem;
+            }
+            .popup-fofoca .cabeca .fechar-popup {
+                font-size: 1rem;
+            }
+            .footer .social a {
                 font-size: 0.7rem;
-                padding: 8px 16px;
-                bottom: 70px;
+                padding: 2px 8px;
+            }
+            .footer .copy {
+                font-size: 0.55rem;
+            }
+            .toast {
+                font-size: 0.65rem;
+                padding: 6px 14px;
+                bottom: 60px;
                 max-width: 95%;
             }
         }
@@ -1381,14 +1468,15 @@
         @media (max-width: 380px) {
             .grid-videos {
                 grid-template-columns: 1fr;
-                gap: 14px;
+                gap: 12px;
             }
-            .logo-texto {
-                font-size: 0.75rem;
+            .logo-imagem {
+                height: 26px;
+                max-width: 80px;
             }
             .header-actions .btn {
-                font-size: 0.55rem;
-                padding: 3px 8px;
+                font-size: 0.5rem;
+                padding: 2px 8px;
             }
         }
 
@@ -1421,17 +1509,6 @@
             clip: rect(0, 0, 0, 0);
             border: 0;
         }
-
-        /* ===== LOADING ===== */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid var(--amarelo);
-            border-radius: 50%;
-            animation: girarSuave 0.8s linear infinite;
-        }
     </style>
 </head>
 <body>
@@ -1445,15 +1522,7 @@
     <header class="header" id="header">
         <div class="container header-inner">
             <a class="logo" href="#" id="logoLink">
-                <div class="logo-icone animar-flutuar">
-                    <span>👄</span>
-                    <span>💬</span>
-                    <span>🏘️</span>
-                </div>
-                <div class="logo-texto" id="siteNome">
-                    FOFOCA
-                    <small class="amarelo">DA MINHA RUA</small>
-                </div>
+                <img src="https://i.ibb.co/rRp2jYtk/logo-fofoca.png" alt="Fofoca da Minha Rua" class="logo-imagem" id="logoImg" />
             </a>
             <div class="header-actions">
                 <a href="#videos" class="btn btn-rosa btn-pequeno">📹 Vídeos</a>
@@ -1530,7 +1599,7 @@
                 <h2>
                     📹 <span class="amarelo">Fofocas</span> em vídeo
                 </h2>
-                <span style="color:#666;font-size:0.85rem;" id="totalVideos">0 vídeos</span>
+                <span style="color:#888;font-size:0.8rem;" id="totalVideos">0 vídeos</span>
             </div>
             <div class="grid-videos" id="gridVideos">
                 <!-- será preenchido via JS -->
@@ -1539,13 +1608,10 @@
     </section>
 
     <!-- ===== FOOTER ===== -->
-    <footer class="footer">
+    <footer class="footer" id="footer">
         <div class="container">
-            <div class="social">
-                <a href="#" target="_blank">📸 Instagram</a>
-                <a href="#" target="_blank">📹 YouTube</a>
-                <a href="#" target="_blank">🐦 Twitter</a>
-                <a href="#" target="_blank">📧 Email</a>
+            <div class="social" id="socialLinks">
+                <!-- será preenchido via JS -->
             </div>
             <div class="copy">
                 © 2026 <span class="rosa">Fofoca da Minha Rua</span> — Todo mundo tem uma fofoca pra contar! 💋
@@ -1598,7 +1664,7 @@
         </div>
         <div class="conteudo" id="popupConteudo">
             <div class="mini-thumb" id="popupThumb">
-                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--roxo);color:var(--amarelo);font-size:2rem;">🎬</div>
+                <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(111,45,168,0.3);color:var(--amarelo);font-size:2rem;">🎬</div>
             </div>
             <div class="info">
                 <div class="nome" id="popupTitulo">Carregando...</div>
@@ -1617,8 +1683,15 @@
             return {
                 siteNome: 'FOFOCA DA MINHA RUA',
                 bio: '💬 Da sua rua, família, trabalho ou de quem você quiser 👀<br /><span>📩 Mande sua fofoca no direct &nbsp; 🔒 Anônimo é garantido!</span>',
+                logoUrl: 'https://i.ibb.co/rRp2jYtk/logo-fofoca.png',
+                redesSociais: {
+                    instagram: '#',
+                    youtube: '#',
+                    twitter: '#',
+                    email: '#'
+                },
                 videos: [],
-                destaqueId: null, // id do vídeo em destaque
+                destaqueId: null,
                 popupAtivo: false,
                 popupVideoId: null,
             };
@@ -1629,11 +1702,17 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    // Garante que todos os campos existam
                     const def = getDefaultData();
                     for (const k in def) {
                         if (!(k in parsed)) parsed[k] = def[k];
                     }
+                    // Garantir que redesSociais tenha todos os campos
+                    const rs = parsed.redesSociais || {};
+                    const defRs = def.redesSociais;
+                    for (const k in defRs) {
+                        if (!(k in rs)) rs[k] = defRs[k];
+                    }
+                    parsed.redesSociais = rs;
                     return parsed;
                 }
             } catch (_) { /* ignora */ }
@@ -1682,11 +1761,14 @@
         let videoAtualId = null;
 
         function renderSite() {
-            // Nome do site
-            const nomeEl = document.getElementById('siteNome');
-            if (nomeEl) {
-                // Mantém o formato com "FOFOCA" + "DA MINHA RUA"
-                nomeEl.innerHTML = `FOFOCA <small class="amarelo">DA MINHA RUA</small>`;
+            // Logo
+            const logoImg = document.getElementById('logoImg');
+            if (logoImg && dados.logoUrl) {
+                logoImg.src = dados.logoUrl;
+                logoImg.alt = 'Fofoca da Minha Rua';
+                logoImg.onerror = () => {
+                    logoImg.src = 'https://via.placeholder.com/200x80/6F2DA8/FFD400?text=FOFOCA';
+                };
             }
 
             // Bio
@@ -1694,6 +1776,9 @@
             if (bioEl && dados.bio) {
                 bioEl.innerHTML = dados.bio;
             }
+
+            // Redes sociais
+            renderRedesSociais();
 
             // Destaque
             renderDestaque();
@@ -1711,6 +1796,29 @@
             }
         }
 
+        function renderRedesSociais() {
+            const container = document.getElementById('socialLinks');
+            if (!container) return;
+            const rs = dados.redesSociais || {};
+            const map = {
+                instagram: { icon: '📸', label: 'Instagram' },
+                youtube: { icon: '📹', label: 'YouTube' },
+                twitter: { icon: '🐦', label: 'Twitter' },
+                email: { icon: '📧', label: 'Email' }
+            };
+            let html = '';
+            for (const [key, url] of Object.entries(rs)) {
+                if (url && url !== '#') {
+                    const info = map[key] || { icon: '🔗', label: key };
+                    html += `<a href="${url}" target="_blank" rel="noopener">${info.icon} ${info.label}</a>`;
+                }
+            }
+            if (!html) {
+                html = `<span style="color:#555;">Siga-nos nas redes sociais!</span>`;
+            }
+            container.innerHTML = html;
+        }
+
         function renderDestaque() {
             const container = document.getElementById('destaqueContainer');
             if (!container) return;
@@ -1719,8 +1827,8 @@
                 container.innerHTML = `
                     <div class="vazio-destaque animar-pulsar">
                         <span class="grande">👀</span>
-                        <p style="font-size:1.2rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em destaque ainda!</p>
-                        <p style="color:#888;font-size:0.9rem;">O admin pode ativar uma no painel.</p>
+                        <p style="font-size:1.1rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em destaque ainda!</p>
+                        <p style="color:#888;font-size:0.85rem;">O admin pode ativar uma no painel.</p>
                     </div>
                 `;
                 return;
@@ -1749,7 +1857,7 @@
                     <div class="info-destaque">
                         <h3>🔥 ${video.titulo}</h3>
                         <p>${video.descricao || '📢 Fofoca quente!'}</p>
-                        <div style="display:flex;gap:16px;margin-top:6px;font-size:0.8rem;color:#888;">
+                        <div style="display:flex;gap:16px;margin-top:6px;font-size:0.8rem;color:#999;">
                             <span>❤️ ${video.likes || 0}</span>
                             <span>💬 ${(video.comentarios || []).length}</span>
                             <span>📅 ${formatarData(video.data)}</span>
@@ -1765,10 +1873,10 @@
 
             if (dados.videos.length === 0) {
                 grid.innerHTML = `
-                    <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#666;">
-                        <div style="font-size:4rem;margin-bottom:12px;">📭</div>
-                        <p style="font-size:1.2rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em vídeo ainda!</p>
-                        <p style="font-size:0.9rem;">Mande sua fofoca e ela pode aparecer aqui 👀</p>
+                    <div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#666;">
+                        <div style="font-size:3.5rem;margin-bottom:10px;">📭</div>
+                        <p style="font-size:1.1rem;font-weight:700;color:var(--amarelo);">Nenhuma fofoca em vídeo ainda!</p>
+                        <p style="font-size:0.85rem;">Mande sua fofoca e ela pode aparecer aqui 👀</p>
                     </div>
                 `;
                 return;
@@ -1799,7 +1907,6 @@
                 `;
             }).join('');
 
-            // Click para abrir modal
             grid.querySelectorAll('.card-video').forEach(el => {
                 el.addEventListener('click', () => {
                     const id = el.dataset.id;
@@ -1824,13 +1931,16 @@
             }
 
             document.getElementById('popupTitulo').textContent = video.titulo;
-            document.getElementById('popupThumb').innerHTML = video.tipo === 'youtube' ?
-                `<iframe src="${video.url}" style="width:100%;height:100%;border:0;" loading="lazy"></iframe>` :
-                `<video src="${video.url}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>`;
+            const thumb = document.getElementById('popupThumb');
+            if (video.tipo === 'youtube') {
+                thumb.innerHTML = `<iframe src="${video.url}" style="width:100%;height:100%;border:0;" loading="lazy"></iframe>`;
+            } else {
+                thumb.innerHTML =
+                    `<video src="${video.url}" style="width:100%;height:100%;object-fit:cover;" preload="metadata"></video>`;
+            }
 
             popup.classList.add('visivel');
 
-            // Click no popup abre o vídeo
             document.getElementById('popupConteudo').onclick = () => {
                 abrirModal(video.id);
             };
@@ -1857,27 +1967,22 @@
             const lista = document.getElementById('listaComentarios');
             const btnCurtir = document.getElementById('btnCurtir');
 
-            // Player
             const playerHtml = video.tipo === 'youtube' ?
                 `<iframe src="${video.url}" allowfullscreen title="${video.titulo}"></iframe>` :
                 `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
             wrapper.innerHTML = playerHtml;
 
-            // Info
             titulo.textContent = video.titulo;
             desc.textContent = video.descricao || '📢 Fofoca da minha rua!';
             curtidas.textContent = video.likes || 0;
             comentarios.textContent = (video.comentarios || []).length;
             btnCurtir.dataset.id = video.id;
 
-            // Comentários
             renderComentarios(video);
 
-            // Overlay
             overlay.classList.add('aberto');
             document.body.style.overflow = 'hidden';
 
-            // Atualiza URL hash (único)
             const slug = slugify(video.titulo);
             window.location.hash = `video-${slug}`;
         }
@@ -1886,7 +1991,8 @@
             const lista = document.getElementById('listaComentarios');
             const comentarios = video.comentarios || [];
             if (comentarios.length === 0) {
-                lista.innerHTML = `<div style="color:#666;font-size:0.85rem;padding:8px 0;">Ainda não há comentários. Seja o primeiro! 💬</div>`;
+                lista.innerHTML =
+                    `<div style="color:#666;font-size:0.8rem;padding:6px 0;">Ainda não há comentários. Seja o primeiro! 💬</div>`;
                 return;
             }
             lista.innerHTML = comentarios.map(c => `
@@ -1902,11 +2008,9 @@
             const overlay = document.getElementById('modalVideo');
             overlay.classList.remove('aberto');
             document.body.style.overflow = '';
-            // Limpa hash se for de vídeo
             if (window.location.hash.startsWith('#video-')) {
                 window.location.hash = '';
             }
-            // Para vídeos
             const wrapper = document.getElementById('modalPlayerWrapper');
             wrapper.innerHTML = '';
             videoAtualId = null;
@@ -1920,7 +2024,6 @@
             if (!video) return;
             video.likes = (video.likes || 0) + 1;
             saveData(dados);
-            // Atualiza UI
             const cont = document.getElementById('contCurtidas');
             if (cont) cont.textContent = video.likes;
             const btn = document.getElementById('btnCurtir');
@@ -1945,7 +2048,6 @@
                 navigator.clipboard.writeText(url).then(() => {
                     toast('🔗 Link copiado! Compartilhe com os amigos!');
                 }).catch(() => {
-                    // Fallback
                     const input = document.createElement('input');
                     input.value = url;
                     document.body.appendChild(input);
@@ -2027,26 +2129,66 @@
             const hash = window.location.hash;
             if (hash.startsWith('#video-')) {
                 const slug = hash.replace('#video-', '');
-                // Procura vídeo pelo slug
                 const video = dados.videos.find(v => slugify(v.titulo) === slug);
                 if (video) {
                     abrirModal(video.id);
                 } else {
-                    // Tenta por id
-                    const id = slug;
-                    const v = dados.videos.find(v => v.id === id);
+                    const v = dados.videos.find(v => v.id === slug);
                     if (v) abrirModal(v.id);
                 }
             }
         }
 
         // ============================================================
-        //  POPUP
+        //  PWA - SERVICE WORKER & MANIFEST
         // ============================================================
-        document.getElementById('fecharPopup')?.addEventListener('click', (e) => {
-            e.stopPropagation();
-            document.getElementById('popupFofoca').classList.remove('visivel');
-        });
+        function registerSW() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => {
+                        e.waitUntil(
+                            caches.open('fofoca-v1').then(cache => {
+                                return cache.addAll([
+                                    '/',
+                                    '/index.html',
+                                    '${dados.logoUrl || 'https://i.ibb.co/rRp2jYtk/logo-fofoca.png'}'
+                                ]);
+                            })
+                        );
+                    });
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            caches.match(e.request).then(response => response || fetch(e.request))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swUrl, { scope: '/' }).catch(() => {});
+            }
+        }
+
+        function createManifest() {
+            const manifest = {
+                name: 'Fofoca da Minha Rua',
+                short_name: 'FofocaRua',
+                description: 'Todo mundo tem uma fofoca pra contar!',
+                start_url: '/',
+                display: 'standalone',
+                background_color: '#111111',
+                theme_color: '#FF2D95',
+                icons: [{
+                    src: dados.logoUrl || 'https://i.ibb.co/rRp2jYtk/logo-fofoca.png',
+                    sizes: '512x512',
+                    type: 'image/png',
+                    purpose: 'any maskable'
+                }]
+            };
+            const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            const manifestUrl = URL.createObjectURL(blob);
+            const link = document.querySelector('link[rel="manifest"]');
+            if (link) link.href = manifestUrl;
+        }
 
         // ============================================================
         //  EVENTOS
@@ -2054,25 +2196,23 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderSite();
             initStories();
+            createManifest();
+            registerSW();
 
-            // Fechar modal
             document.getElementById('modalFechar')?.addEventListener('click', fecharModal);
             document.getElementById('modalVideo')?.addEventListener('click', (e) => {
                 if (e.target === e.currentTarget) fecharModal();
             });
 
-            // Curtir
             document.getElementById('btnCurtir')?.addEventListener('click', function() {
                 const id = this.dataset.id;
                 if (id) curtirVideo(id);
             });
 
-            // Compartilhar
             document.getElementById('btnCompartilhar')?.addEventListener('click', function() {
                 if (videoAtualId) compartilharVideo(videoAtualId);
             });
 
-            // Comentar
             document.getElementById('btnEnviarComentario')?.addEventListener('click', function() {
                 if (videoAtualId) adicionarComentario(videoAtualId);
             });
@@ -2083,33 +2223,34 @@
                 }
             });
 
-            // Esc fecha modal
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') fecharModal();
             });
 
-            // Hash
             window.addEventListener('hashchange', handleHash);
             handleHash();
 
-            // Botão "Comentar" no modal foca no input
             document.getElementById('btnComentar')?.addEventListener('click', () => {
                 document.getElementById('inputComentario')?.focus();
             });
 
-            // Atualiza a cada 10s (para sincronia entre abas)
+            document.getElementById('fecharPopup')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('popupFofoca').classList.remove('visivel');
+            });
+
+            // Sincroniza com outras abas
             setInterval(() => {
                 const novo = loadData();
-                // Só atualiza se houver mudança
                 if (JSON.stringify(novo) !== JSON.stringify(dados)) {
                     dados = novo;
                     renderSite();
                 }
-            }, 10000);
+            }, 8000);
         });
 
         // ============================================================
-        //  EXPORTA PARA ADMIN (via localStorage)
+        //  EXPORTA PARA ADMIN
         // ============================================================
         window.__fofoca = {
             dados: () => loadData(),
