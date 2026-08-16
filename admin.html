@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -7,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Font Awesome para ícones oficiais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
         /* ===== RESET & BASE ===== */
         * {
@@ -318,6 +321,35 @@
             padding: 4px 12px;
             font-size: 0.65rem;
         }
+        .btn-danger {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--preto);
+        }
+        .btn-danger:hover {
+            background: #cc005f;
+            border-color: var(--amarelo);
+        }
+        .btn-roxo {
+            background: var(--roxo);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
+        .btn-roxo:hover {
+            background: var(--rosa);
+        }
+        .btn-salvar {
+            background: var(--amarelo);
+            color: var(--preto);
+            border-color: var(--preto);
+            padding: 10px 30px;
+            font-size: 0.9rem;
+        }
+        .btn-salvar:hover {
+            background: var(--rosa);
+            color: var(--branco);
+            border-color: var(--amarelo);
+        }
 
         /* ===== LOGIN ===== */
         .login-container {
@@ -474,7 +506,8 @@
             margin-bottom: 4px;
         }
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 10px 16px;
             border-radius: 60px;
@@ -491,8 +524,13 @@
             resize: vertical;
             min-height: 70px;
         }
+        .form-group select option {
+            background: var(--preto);
+            color: var(--branco);
+        }
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             border-color: var(--amarelo);
             box-shadow: 0 0 20px rgba(255, 212, 0, 0.05);
         }
@@ -509,36 +547,75 @@
             margin-bottom: 0;
         }
 
-        .btn-salvar {
-            background: var(--amarelo);
-            color: var(--preto);
-            border-color: var(--preto);
-            padding: 10px 30px;
-            font-size: 0.9rem;
+        .preview-container {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 8px;
         }
-        .btn-salvar:hover {
-            background: var(--rosa);
-            color: var(--branco);
-            border-color: var(--amarelo);
+        .preview-player {
+            flex: 1;
+            min-width: 280px;
+            background: var(--preto);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
         }
-
-        .btn-danger {
-            background: var(--rosa);
-            color: var(--branco);
-            border-color: var(--preto);
+        .preview-player .player-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
         }
-        .btn-danger:hover {
-            background: #cc005f;
-            border-color: var(--amarelo);
+        .preview-player .player-wrapper iframe,
+        .preview-player .player-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: var(--preto);
         }
-
-        .btn-roxo {
-            background: var(--roxo);
-            color: var(--branco);
-            border-color: var(--amarelo);
+        .preview-player .player-wrapper.vertical {
+            padding-bottom: 177.77% !important;
         }
-        .btn-roxo:hover {
-            background: var(--rosa);
+        .preview-player .player-wrapper.horizontal {
+            padding-bottom: 56.25% !important;
+        }
+        .preview-capa {
+            flex: 0 0 160px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: var(--preto);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-capa img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 200px;
+        }
+        .preview-capa .placeholder {
+            color: #666;
+            font-size: 0.8rem;
+            padding: 20px;
+            text-align: center;
+        }
+        .upload-capa {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .upload-capa input[type="file"] {
+            display: none;
+        }
+        .upload-capa .btn {
+            cursor: pointer;
         }
 
         /* ===== LISTA DE VÍDEOS ===== */
@@ -663,6 +740,13 @@
                 font-size: 0.7rem;
                 padding: 6px 14px;
             }
+            .preview-container {
+                flex-direction: column;
+            }
+            .preview-capa {
+                flex: 1;
+                min-height: 120px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -712,6 +796,9 @@
         .hidden {
             display: none !important;
         }
+        .gap-8 {
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -722,13 +809,13 @@
     <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="container header-inner">
-            <a class="logo" href="index.html" target="_blank">
+            <a class="logo" href="fofocadaminharua.html" target="_blank">
                 <img src="https://i.ibb.co/rRp2jYtk/logo-fofoca.png" alt="Fofoca" class="logo-imagem" id="logoPreview" />
                 <span class="logo-texto"><span class="amarelo">Admin</span></span>
             </a>
             <div>
                 <button class="btn btn-outline btn-pequeno" id="btnLogout">🚪 Sair</button>
-                <a href="index.html" class="btn btn-rosa btn-pequeno" target="_blank">📱 Ver site</a>
+                <a href="fofocadaminharua.html" class="btn btn-rosa btn-pequeno" target="_blank">📱 Ver site</a>
             </div>
         </div>
     </header>
@@ -777,19 +864,19 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Instagram</label>
+                        <label><i class="fa-brands fa-instagram"></i> Instagram</label>
                         <input type="url" id="socialInstagram" placeholder="https://instagram.com/..." />
                     </div>
                     <div class="form-group">
-                        <label>YouTube</label>
+                        <label><i class="fa-brands fa-youtube"></i> YouTube</label>
                         <input type="url" id="socialYoutube" placeholder="https://youtube.com/..." />
                     </div>
                     <div class="form-group">
-                        <label>Twitter / X</label>
+                        <label><i class="fa-brands fa-x-twitter"></i> Twitter / X</label>
                         <input type="url" id="socialTwitter" placeholder="https://twitter.com/..." />
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
+                        <label><i class="fa-solid fa-envelope"></i> Email</label>
                         <input type="email" id="socialEmail" placeholder="contato@..." />
                     </div>
                 </div>
@@ -805,7 +892,7 @@
                     <button class="btn btn-amarelo" id="btnNovoVideo">➕ Novo vídeo</button>
                 </div>
                 <div id="formNovoVideo" class="hidden" style="background:rgba(255,255,255,0.03);padding:16px;border-radius:20px;margin-bottom:16px;border:1px dashed var(--amarelo);">
-                    <h4 style="color:var(--amarelo);font-size:1rem;margin-bottom:10px;">✏️ Adicionar vídeo</h4>
+                    <h4 style="color:var(--amarelo);font-size:1rem;margin-bottom:10px;">✏️ Adicionar/Editar vídeo</h4>
                     <div class="form-group">
                         <label>Título *</label>
                         <input type="text" id="videoTitulo" placeholder="Título da fofoca" />
@@ -816,13 +903,42 @@
                     </div>
                     <div class="form-group">
                         <label>Link do vídeo (YouTube, Facebook, Instagram, etc.) *</label>
-                        <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." />
+                        <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." oninput="previewVideo()" />
                     </div>
                     <div class="form-group">
-                        <label>Capa (URL da imagem, opcional)</label>
-                        <input type="url" id="videoCapa" placeholder="https://.../capa.jpg" />
+                        <label>Orientação</label>
+                        <select id="videoOrientacao">
+                            <option value="horizontal">Horizontal (16:9)</option>
+                            <option value="vertical">Vertical (9:16)</option>
+                        </select>
                     </div>
-                    <div class="flex">
+                    <div class="form-group">
+                        <label>Capa do vídeo (URL ou upload)</label>
+                        <div class="upload-capa">
+                            <input type="text" id="videoCapa" placeholder="https://.../capa.jpg" style="flex:1;" />
+                            <label class="btn btn-roxo btn-pequeno" style="cursor:pointer;">
+                                📁 Upload
+                                <input type="file" id="capaUpload" accept="image/*" style="display:none;" />
+                            </label>
+                            <button class="btn btn-outline btn-pequeno" type="button" onclick="gerarCapaYoutube()">🎬 Extrair do YouTube</button>
+                        </div>
+                        <div style="margin-top:6px;">
+                            <img id="capaPreview" src="" alt="Preview da capa" style="max-height:80px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);display:none;padding:4px;" />
+                        </div>
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <div class="preview-player">
+                            <div class="player-wrapper horizontal" id="previewPlayerWrapper">
+                                <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.9rem;background:var(--preto);">
+                                    <span>👀 Preview do vídeo</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="preview-capa" id="previewCapa">
+                            <div class="placeholder">📸 Capa</div>
+                        </div>
+                    </div>
+                    <div class="flex" style="margin-top:12px;">
                         <button class="btn btn-salvar" id="btnSalvarVideo">💾 Salvar vídeo</button>
                         <button class="btn btn-outline" id="btnCancelarVideo">Cancelar</button>
                     </div>
@@ -838,7 +954,7 @@
 
     <script>
         // ============================================================
-        //  BLOQUEIO DE ZOOM (reforçado)
+        //  BLOQUEIO DE ZOOM
         // ============================================================
         (function preventZoom() {
             document.addEventListener('keydown', function(e) {
@@ -865,7 +981,7 @@
         //  DATA LAYER
         // ============================================================
         const STORAGE_KEY = 'fofoca_data';
-        const SENHA_ADMIN = 'admin123'; // senha fixa
+        const SENHA_ADMIN = 'admin123';
 
         function getDefaultData() {
             return {
@@ -925,107 +1041,124 @@
         }
 
         // ============================================================
-        //  RENDER
+        //  HELPERS DE VÍDEO
         // ============================================================
-        let dados = loadData();
-
-        function renderAdmin() {
-            // Logo preview
-            const preview = document.getElementById('logoPreviewAdmin');
-            const logoPreviewHeader = document.getElementById('logoPreview');
-            if (dados.logoUrl) {
-                preview.src = dados.logoUrl;
-                logoPreviewHeader.src = dados.logoUrl;
-            }
-            document.getElementById('logoUrl').value = dados.logoUrl || '';
-            document.getElementById('bioInput').value = dados.bio || '';
-            document.getElementById('socialInstagram').value = dados.redesSociais?.instagram || '';
-            document.getElementById('socialYoutube').value = dados.redesSociais?.youtube || '';
-            document.getElementById('socialTwitter').value = dados.redesSociais?.twitter || '';
-            document.getElementById('socialEmail').value = dados.redesSociais?.email || '';
-            renderVideosList();
+        function extrairIdYoutube(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
         }
 
-        function renderVideosList() {
-            const container = document.getElementById('listaVideos');
-            if (!container) return;
-            if (!dados.videos || dados.videos.length === 0) {
-                container.innerHTML = `<div style="color:#666;padding:20px;text-align:center;">Nenhum vídeo cadastrado. Adicione o primeiro!</div>`;
+        function gerarThumbYoutube(url) {
+            const id = extrairIdYoutube(url);
+            return id ? `https://img.youtube.com/vi/${id}/maxresdefault.jpg` : null;
+        }
+
+        function detectarTipoVideo(url) {
+            if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
+            if (url.includes('facebook.com') || url.includes('fb.com')) return 'facebook';
+            if (url.includes('instagram.com')) return 'instagram';
+            if (url.match(/\.(mp4|webm|ogg|mov|avi)$/i)) return 'video';
+            return 'link';
+        }
+
+        function gerarEmbedHtml(video) {
+            const tipo = video.tipo || detectarTipoVideo(video.url);
+            let embedUrl = video.url;
+
+            if (tipo === 'youtube') {
+                const id = extrairIdYoutube(video.url);
+                if (id) {
+                    embedUrl = `https://www.youtube.com/embed/${id}`;
+                    return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
+                }
+            }
+            if (tipo === 'facebook' || tipo === 'instagram' || tipo === 'link') {
+                return `<iframe src="${video.url}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
+            }
+            if (tipo === 'video') {
+                return `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
+            }
+            return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
+        }
+
+        // ============================================================
+        //  PREVIEW DO VÍDEO (no admin)
+        // ============================================================
+        function previewVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const titulo = document.getElementById('videoTitulo').value.trim() || 'Preview';
+            const orientacao = document.getElementById('videoOrientacao').value;
+            const wrapper = document.getElementById('previewPlayerWrapper');
+            const capaPreview = document.getElementById('capaPreview');
+            const previewCapaDiv = document.getElementById('previewCapa');
+
+            if (!url) {
+                wrapper.innerHTML =
+                    `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.9rem;background:var(--preto);"><span>👀 Preview do vídeo</span></div>`;
+                wrapper.className = 'player-wrapper ' + orientacao;
                 return;
             }
-            container.innerHTML = dados.videos.map(v => {
-                const isDestaque = dados.destaqueId === v.id;
-                const isPopup = dados.popupAtivo && dados.popupVideoId === v.id;
-                return `
-                    <div class="item-video">
-                        <div class="info">
-                            <div class="titulo">${v.titulo}</div>
-                            <div class="meta">
-                                <span>❤️ ${v.likes || 0}</span>
-                                <span>💬 ${(v.comentarios || []).length}</span>
-                                ${isDestaque ? '<span class="destaque">⭐ Destaque</span>' : ''}
-                                ${isPopup ? '<span class="popup">📢 Popup ativo</span>' : ''}
-                                <span>${v.tipo || 'link'}</span>
-                            </div>
-                        </div>
-                        <div class="acoes">
-                            <button class="btn btn-roxo btn-pequeno" data-id="${v.id}" data-acao="editar">✏️</button>
-                            <button class="btn ${isDestaque ? 'btn-amarelo' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="destaque">⭐</button>
-                            <button class="btn ${isPopup ? 'btn-rosa' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="popup">📢</button>
-                            <button class="btn btn-danger btn-pequeno" data-id="${v.id}" data-acao="excluir">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
 
-            // Eventos nos botões
-            container.querySelectorAll('[data-acao]').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const id = this.dataset.id;
-                    const acao = this.dataset.acao;
-                    if (!id) return;
-                    if (acao === 'excluir') {
-                        if (confirm('Tem certeza que deseja excluir este vídeo?')) {
-                            dados.videos = dados.videos.filter(v => v.id !== id);
-                            if (dados.destaqueId === id) dados.destaqueId = null;
-                            if (dados.popupVideoId === id) { dados.popupAtivo = false;
-                                dados.popupVideoId = null; }
-                            saveData(dados);
-                            renderVideosList();
-                            toast('🗑️ Vídeo excluído!');
-                        }
-                    } else if (acao === 'destaque') {
-                        dados.destaqueId = dados.destaqueId === id ? null : id;
-                        saveData(dados);
-                        renderVideosList();
-                        toast(dados.destaqueId ? '⭐ Vídeo em destaque!' : '⭐ Destaque removido');
-                    } else if (acao === 'popup') {
-                        if (dados.popupAtivo && dados.popupVideoId === id) {
-                            dados.popupAtivo = false;
-                            dados.popupVideoId = null;
-                        } else {
-                            dados.popupAtivo = true;
-                            dados.popupVideoId = id;
-                        }
-                        saveData(dados);
-                        renderVideosList();
-                        toast(dados.popupAtivo ? '📢 Popup ativado!' : '📢 Popup desativado');
-                    } else if (acao === 'editar') {
-                        const video = dados.videos.find(v => v.id === id);
-                        if (video) {
-                            document.getElementById('videoTitulo').value = video.titulo || '';
-                            document.getElementById('videoDesc').value = video.descricao || '';
-                            document.getElementById('videoUrl').value = video.url || '';
-                            document.getElementById('videoCapa').value = video.capa || '';
-                            document.getElementById('videoEditId').value = video.id;
-                            document.getElementById('formNovoVideo').classList.remove('hidden');
-                            document.getElementById('formNovoVideo').scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }
-                });
-            });
+            const tipo = detectarTipoVideo(url);
+            const videoObj = { url, titulo, tipo, capa: document.getElementById('videoCapa').value.trim() };
+            const html = gerarEmbedHtml(videoObj);
+            wrapper.innerHTML = html;
+            wrapper.className = 'player-wrapper ' + orientacao;
+
+            // Atualizar preview da capa
+            const capaUrl = document.getElementById('videoCapa').value.trim();
+            if (capaUrl) {
+                capaPreview.src = capaUrl;
+                capaPreview.style.display = 'block';
+                previewCapaDiv.innerHTML = `<img src="${capaUrl}" alt="Capa" style="width:100%;height:100%;object-fit:cover;" />`;
+            } else {
+                capaPreview.style.display = 'none';
+                previewCapaDiv.innerHTML = `<div class="placeholder">📸 Capa</div>`;
+            }
+
+            // Se for YouTube e não tiver capa, sugere extrair
+            if (tipo === 'youtube' && !document.getElementById('videoCapa').value.trim()) {
+                const thumb = gerarThumbYoutube(url);
+                if (thumb) {
+                    document.getElementById('videoCapa').value = thumb;
+                    capaPreview.src = thumb;
+                    capaPreview.style.display = 'block';
+                    previewCapaDiv.innerHTML = `<img src="${thumb}" alt="Capa" style="width:100%;height:100%;object-fit:cover;" />`;
+                }
+            }
         }
+
+        function gerarCapaYoutube() {
+            const url = document.getElementById('videoUrl').value.trim();
+            if (!url) {
+                toast('⚠️ Cole o link do YouTube primeiro.');
+                return;
+            }
+            const thumb = gerarThumbYoutube(url);
+            if (thumb) {
+                document.getElementById('videoCapa').value = thumb;
+                previewVideo();
+                toast('✅ Thumbnail extraída!');
+            } else {
+                toast('❌ Não foi possível extrair a thumbnail.');
+            }
+        }
+
+        // Upload de capa
+        document.getElementById('capaUpload')?.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                const base64 = ev.target.result;
+                document.getElementById('videoCapa').value = base64;
+                previewVideo();
+                toast('📸 Capa carregada!');
+            };
+            reader.readAsDataURL(file);
+            this.value = '';
+        });
 
         // ============================================================
         //  ADMIN: LOGIN / LOGOUT
@@ -1084,6 +1217,113 @@
         });
 
         // ============================================================
+        //  RENDER ADMIN
+        // ============================================================
+        let dados = loadData();
+
+        function renderAdmin() {
+            // Logo preview
+            const preview = document.getElementById('logoPreviewAdmin');
+            const logoPreviewHeader = document.getElementById('logoPreview');
+            if (dados.logoUrl) {
+                preview.src = dados.logoUrl;
+                logoPreviewHeader.src = dados.logoUrl;
+            }
+            document.getElementById('logoUrl').value = dados.logoUrl || '';
+            document.getElementById('bioInput').value = dados.bio || '';
+            document.getElementById('socialInstagram').value = dados.redesSociais?.instagram || '';
+            document.getElementById('socialYoutube').value = dados.redesSociais?.youtube || '';
+            document.getElementById('socialTwitter').value = dados.redesSociais?.twitter || '';
+            document.getElementById('socialEmail').value = dados.redesSociais?.email || '';
+            renderVideosList();
+        }
+
+        function renderVideosList() {
+            const container = document.getElementById('listaVideos');
+            if (!container) return;
+            if (!dados.videos || dados.videos.length === 0) {
+                container.innerHTML = `<div style="color:#666;padding:20px;text-align:center;">Nenhum vídeo cadastrado. Adicione o primeiro!</div>`;
+                return;
+            }
+            container.innerHTML = dados.videos.map(v => {
+                const isDestaque = dados.destaqueId === v.id;
+                const isPopup = dados.popupAtivo && dados.popupVideoId === v.id;
+                return `
+                    <div class="item-video">
+                        <div class="info">
+                            <div class="titulo">${v.titulo}</div>
+                            <div class="meta">
+                                <span>❤️ ${v.likes || 0}</span>
+                                <span>💬 ${(v.comentarios || []).length}</span>
+                                ${isDestaque ? '<span class="destaque">⭐ Destaque</span>' : ''}
+                                ${isPopup ? '<span class="popup">📢 Popup ativo</span>' : ''}
+                                <span>${v.tipo || 'link'}</span>
+                                <span>${v.orientacao || 'horizontal'}</span>
+                            </div>
+                        </div>
+                        <div class="acoes">
+                            <button class="btn btn-roxo btn-pequeno" data-id="${v.id}" data-acao="editar">✏️</button>
+                            <button class="btn ${isDestaque ? 'btn-amarelo' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="destaque">⭐</button>
+                            <button class="btn ${isPopup ? 'btn-rosa' : 'btn-outline'} btn-pequeno" data-id="${v.id}" data-acao="popup">📢</button>
+                            <button class="btn btn-danger btn-pequeno" data-id="${v.id}" data-acao="excluir">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.querySelectorAll('[data-acao]').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = this.dataset.id;
+                    const acao = this.dataset.acao;
+                    if (!id) return;
+                    if (acao === 'excluir') {
+                        if (confirm('Tem certeza que deseja excluir este vídeo?')) {
+                            dados.videos = dados.videos.filter(v => v.id !== id);
+                            if (dados.destaqueId === id) dados.destaqueId = null;
+                            if (dados.popupVideoId === id) { dados.popupAtivo = false;
+                                dados.popupVideoId = null; }
+                            saveData(dados);
+                            renderVideosList();
+                            toast('🗑️ Vídeo excluído!');
+                        }
+                    } else if (acao === 'destaque') {
+                        dados.destaqueId = dados.destaqueId === id ? null : id;
+                        saveData(dados);
+                        renderVideosList();
+                        toast(dados.destaqueId ? '⭐ Vídeo em destaque!' : '⭐ Destaque removido');
+                    } else if (acao === 'popup') {
+                        if (dados.popupAtivo && dados.popupVideoId === id) {
+                            dados.popupAtivo = false;
+                            dados.popupVideoId = null;
+                        } else {
+                            dados.popupAtivo = true;
+                            dados.popupVideoId = id;
+                        }
+                        saveData(dados);
+                        renderVideosList();
+                        toast(dados.popupAtivo ? '📢 Popup ativado!' : '📢 Popup desativado');
+                    } else if (acao === 'editar') {
+                        const video = dados.videos.find(v => v.id === id);
+                        if (video) {
+                            document.getElementById('videoTitulo').value = video.titulo || '';
+                            document.getElementById('videoDesc').value = video.descricao || '';
+                            document.getElementById('videoUrl').value = video.url || '';
+                            document.getElementById('videoCapa').value = video.capa || '';
+                            document.getElementById('videoOrientacao').value = video.orientacao || 'horizontal';
+                            document.getElementById('videoEditId').value = video.id;
+                            document.getElementById('formNovoVideo').classList.remove('hidden');
+                            document.getElementById('formNovoVideo').scrollIntoView({ behavior: 'smooth' });
+                            previewVideo();
+                            // Forçar preview
+                            setTimeout(previewVideo, 300);
+                        }
+                    }
+                });
+            });
+        }
+
+        // ============================================================
         //  CONFIGURAÇÕES
         // ============================================================
         document.getElementById('logoUpload').addEventListener('change', function(e) {
@@ -1131,9 +1371,17 @@
             document.getElementById('videoDesc').value = '';
             document.getElementById('videoUrl').value = '';
             document.getElementById('videoCapa').value = '';
+            document.getElementById('videoOrientacao').value = 'horizontal';
             document.getElementById('videoEditId').value = '';
             document.getElementById('formNovoVideo').classList.remove('hidden');
             document.getElementById('formNovoVideo').scrollIntoView({ behavior: 'smooth' });
+            // Limpar preview
+            const wrapper = document.getElementById('previewPlayerWrapper');
+            wrapper.innerHTML =
+                `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#666;font-size:0.9rem;background:var(--preto);"><span>👀 Preview do vídeo</span></div>`;
+            wrapper.className = 'player-wrapper horizontal';
+            document.getElementById('previewCapa').innerHTML = `<div class="placeholder">📸 Capa</div>`;
+            document.getElementById('capaPreview').style.display = 'none';
         });
 
         document.getElementById('btnCancelarVideo').addEventListener('click', function() {
@@ -1145,6 +1393,7 @@
             const descricao = document.getElementById('videoDesc').value.trim();
             const url = document.getElementById('videoUrl').value.trim();
             const capa = document.getElementById('videoCapa').value.trim();
+            const orientacao = document.getElementById('videoOrientacao').value;
             const editId = document.getElementById('videoEditId').value;
 
             if (!titulo || !url) {
@@ -1152,14 +1401,9 @@
                 return;
             }
 
-            // Detecta tipo da URL (apenas para exibição)
-            let tipo = 'link';
-            if (url.includes('youtube.com') || url.includes('youtu.be')) tipo = 'youtube';
-            else if (url.includes('facebook.com') || url.includes('fb.com')) tipo = 'facebook';
-            else if (url.includes('instagram.com')) tipo = 'instagram';
+            const tipo = detectarTipoVideo(url);
 
             if (editId) {
-                // Editar
                 const video = dados.videos.find(v => v.id === editId);
                 if (video) {
                     video.titulo = titulo;
@@ -1167,10 +1411,10 @@
                     video.url = url;
                     video.capa = capa;
                     video.tipo = tipo;
+                    video.orientacao = orientacao;
                 }
                 toast('✏️ Vídeo atualizado!');
             } else {
-                // Novo
                 const novo = {
                     id: gerarId(),
                     titulo,
@@ -1178,6 +1422,7 @@
                     url,
                     capa,
                     tipo,
+                    orientacao,
                     data: Date.now(),
                     likes: 0,
                     comentarios: [],
