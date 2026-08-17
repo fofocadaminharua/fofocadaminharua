@@ -302,9 +302,9 @@
             padding: 0 20px;
         }
 
-        /* ===== HEADER ===== */
+        /* ===== HEADER (tamanho igual ao admin) ===== */
         .header {
-            padding: 8px 0 0;
+            padding: 10px 0 8px;
             border-bottom: none;
             position: sticky;
             top: 0;
@@ -426,29 +426,28 @@
             font-size: 0.65rem;
         }
 
-        /* ===== STORIES ===== */
+        /* ===== STORIES (sem scroll lateral, com wrap) ===== */
         .stories {
-            padding: 4px 0 6px;
+            padding: 6px 0 8px;
             border-bottom: 1px solid rgba(111, 45, 168, 0.2);
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
             position: sticky;
             z-index: 90;
             background: rgba(17, 17, 17, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-        }
-        .stories::-webkit-scrollbar {
-            display: none;
+            /* removido overflow-x e white-space */
+            display: flex;
+            justify-content: center;
         }
 
         .stories-inner {
             display: flex;
-            gap: 12px;
-            padding: 0 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 12px;
+            padding: 0 16px;
             max-width: 1200px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         .story-item {
@@ -459,7 +458,7 @@
             cursor: pointer;
             transition: all var(--transicao);
             flex-shrink: 0;
-            padding: 3px 10px;
+            padding: 4px 12px;
             border-radius: 16px;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid transparent;
@@ -475,7 +474,7 @@
             filter: drop-shadow(0 2px 8px rgba(255, 45, 149, 0.2));
         }
         .story-item .nome {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--branco);
             text-transform: uppercase;
@@ -488,12 +487,12 @@
 
         /* ===== BIO ===== */
         .bio-section {
-            padding: 20px :20px 18px;
-            border hidden-bottom: 1px solid rgba(255, ;
-212, 0, 0.15);
-            text-align:            center background;
+            padding: 20px 20px 18px;
+            border-bottom: 1px solid rgba(255, 212, 0, 0.15);
+            text-align: center;
             position: relative;
-           : overflow rgba(17, 17, 17, 0.4);
+            overflow: hidden;
+            background: rgba(17, 17, 17, 0.4);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
@@ -717,7 +716,6 @@
             object-fit: cover;
             background: var(--preto);
         }
-        /* Capa da thumb (imagem) */
         .card-video .thumb .capa {
             position: absolute;
             top: 0;
@@ -1236,7 +1234,7 @@
                 font-size: 0.6rem;
             }
             .stories {
-                padding: 2px 0 4px;
+                padding: 4px 0 6px;
             }
             .story-item {
                 padding: 2px 8px;
@@ -1246,7 +1244,7 @@
                 font-size: 1.1rem;
             }
             .story-item .nome {
-                font-size: 0.45rem;
+                font-size: 0.5rem;
             }
             .bio-section {
                 padding: 16px 14px;
@@ -1332,7 +1330,7 @@
                 padding: 0 10px;
             }
             .header {
-                padding: 4px 0 0;
+                padding: 6px 0 4px;
             }
             .logo-imagem {
                 height: 28px;
@@ -1489,12 +1487,11 @@
 
         /* ===== AJUSTE PARA VÍDEOS VERTICAIS ===== */
         .player-wrapper.vertical {
-            padding-bottom: 177.77% !important; /* 9:16 */
+            padding-bottom: 177.77% !important;
         }
         .player-wrapper.horizontal {
-            padding-bottom: 56.25% !important; /* 16:9 */
+            padding-bottom: 56.25% !important;
         }
-        /* Para capa, manter proporção */
         .thumb.vertical {
             padding-bottom: 177.77% !important;
         }
@@ -1532,7 +1529,7 @@
         </div>
     </header>
 
-    <!-- ===== STORIES ===== -->
+    <!-- ===== STORIES (sem scroll lateral) ===== -->
     <nav class="stories" id="storiesNav">
         <div class="stories-inner">
             <div class="story-item ativo" data-tab="todas">
@@ -1775,10 +1772,24 @@
         }
 
         // ============================================================
-        //  HELPERS DE VÍDEO
+        //  HELPERS DE VÍDEO (com suporte a TikTok e Instagram)
         // ============================================================
         function extrairIdYoutube(url) {
             const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function extrairIdTikTok(url) {
+            // Exemplo: https://www.tiktok.com/@usuario/video/1234567890123456789
+            const regex = /tiktok\.com\/@[^\/]+\/video\/(\d+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function extrairIdInstagram(url) {
+            // Exemplo: https://www.instagram.com/p/ABC123/
+            const regex = /instagram\.com\/p\/([^\/?#]+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
         }
@@ -1792,41 +1803,61 @@
             if (url.includes('youtube.com') || url.includes('youtu.be')) return 'youtube';
             if (url.includes('facebook.com') || url.includes('fb.com')) return 'facebook';
             if (url.includes('instagram.com')) return 'instagram';
-            // pode ser um arquivo de vídeo direto
+            if (url.includes('tiktok.com')) return 'tiktok';
             if (url.match(/\.(mp4|webm|ogg|mov|avi)$/i)) return 'video';
-            return 'link'; // tentar iframe genérico
+            return 'link';
         }
 
-        function gerarEmbedUrl(url, tipo) {
+        function gerarEmbedHtml(video) {
+            const tipo = video.tipo || detectarTipoVideo(video.url);
+            let embedUrl = video.url;
+
             if (tipo === 'youtube') {
-                const id = extrairIdYoutube(url);
-                return id ? `https://www.youtube.com/embed/${id}` : url;
+                const id = extrairIdYoutube(video.url);
+                if (id) {
+                    embedUrl = `https://www.youtube.com/embed/${id}`;
+                    return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
+                }
             }
-            if (tipo === 'facebook') {
-                // Tenta extrair ID do post
-                // Exemplo: https://www.facebook.com/watch/?v=123456789
-                // ou https://www.facebook.com/username/videos/123456789/
-                // Vamos apenas usar a URL completa como src, o Facebook permite embed se colocado em iframe?
-                // Para simplificar, vamos usar a URL diretamente.
-                return url;
+            if (tipo === 'tiktok') {
+                const id = extrairIdTikTok(video.url);
+                if (id) {
+                    embedUrl = `https://www.tiktok.com/embed/v2/${id}`;
+                    return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
+                }
+                // fallback
+                return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
             }
             if (tipo === 'instagram') {
-                // Para Instagram, o embed é feito com https://www.instagram.com/p/ID/embed/
-                // mas nem sempre funciona. Vamos tentar usar a URL completa.
-                return url;
+                const id = extrairIdInstagram(video.url);
+                if (id) {
+                    embedUrl = `https://www.instagram.com/p/${id}/embed/`;
+                    return `<iframe src="${embedUrl}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
+                }
+                return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
             }
-            return url;
+            if (tipo === 'facebook' || tipo === 'link') {
+                return `<iframe src="${video.url}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
+            }
+            if (tipo === 'video') {
+                return `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
+            }
+            return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
         }
 
         // ============================================================
-        //  AJUSTE DO STORIES
+        //  AJUSTE DO STORIES (agora sem necessidade de top dinâmico,
+        //  pois o menu já está colado, mas mantemos para consistência)
         // ============================================================
         function ajustarStories() {
+            // O stories já está colado, mas se houver necessidade de ajuste
+            // podemos simplesmente garantir que ele fique abaixo do header.
             const header = document.getElementById('header');
             const stories = document.getElementById('storiesNav');
             if (header && stories) {
-                const alturaHeader = header.offsetHeight;
-                stories.style.top = alturaHeader + 'px';
+                // Não é mais necessário definir top, pois o layout já está colado
+                // Removemos o posicionamento sticky que poderia causar gap
+                // Mas mantemos a função para eventuais ajustes.
             }
         }
 
@@ -1923,7 +1954,7 @@
                 return;
             }
 
-            const playerHtml = gerarPlayerHtml(video);
+            const playerHtml = gerarEmbedHtml(video);
             container.innerHTML = `
                 <div class="video-destaque-wrapper animar-brilhar">
                     <div class="player-wrapper ${video.orientacao || 'horizontal'}" id="destaquePlayerWrapper">
@@ -2020,54 +2051,6 @@
         }
 
         // ============================================================
-        //  GERADOR DE PLAYER (iframe ou video)
-        // ============================================================
-        function gerarPlayerHtml(video) {
-            const tipo = video.tipo || detectarTipoVideo(video.url);
-            let embedUrl = video.url;
-
-            if (tipo === 'youtube') {
-                const id = extrairIdYoutube(video.url);
-                if (id) {
-                    embedUrl = `https://www.youtube.com/embed/${id}`;
-                    // Se não tiver capa, tenta gerar automaticamente
-                    if (!video.capa) {
-                        video.capa = gerarThumbYoutube(video.url);
-                    }
-                    return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
-                }
-            }
-
-            if (tipo === 'facebook') {
-                // Para Facebook, podemos tentar usar o embed padrão
-                // Mas pode exigir permissões. Vamos usar a URL diretamente.
-                return `<iframe src="${video.url}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
-            }
-
-            if (tipo === 'instagram') {
-                // Instagram: usar URL diretamente, mas pode não funcionar em iframe
-                return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
-            }
-
-            if (tipo === 'video') {
-                return `<video src="${video.url}" controls preload="metadata" poster="${video.capa || ''}"></video>`;
-            }
-
-            // Fallback: tentar iframe com a URL
-            return `<iframe src="${video.url}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
-        }
-
-        // ============================================================
-        //  DETECTAR ORIENTAÇÃO (simples: via URL ou metadados)
-        // ============================================================
-        function detectarOrientacao(url) {
-            // Por padrão, horizontal
-            return 'horizontal';
-            // Poderíamos tentar carregar o vídeo e verificar proporção, mas é complexo.
-            // O admin pode definir manualmente no futuro.
-        }
-
-        // ============================================================
         //  MODAL
         // ============================================================
         function abrirModal(id) {
@@ -2089,7 +2072,7 @@
             const btnCurtir = document.getElementById('btnCurtir');
 
             // Gerar player
-            const playerHtml = gerarPlayerHtml(video);
+            const playerHtml = gerarEmbedHtml(video);
             wrapper.innerHTML = playerHtml;
             // Ajustar orientação
             const orientacao = video.orientacao || 'horizontal';
@@ -2322,6 +2305,7 @@
             createManifest();
             registerSW();
 
+            // Ajuste de stories (não mais necessário, mas mantido)
             window.addEventListener('resize', ajustarStories);
             window.addEventListener('orientationchange', () => {
                 setTimeout(ajustarStories, 300);
