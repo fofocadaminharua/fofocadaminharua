@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700;800&display=swap" rel="stylesheet" />
-    <!-- Font Awesome para ícones oficiais das redes sociais -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="manifest" href="/manifest.json" />
     <style>
@@ -302,7 +301,7 @@
             padding: 0 20px;
         }
 
-        /* ===== HEADER (tamanho igual ao admin) ===== */
+        /* ===== HEADER ===== */
         .header {
             padding: 10px 0 8px;
             border-bottom: none;
@@ -426,7 +425,7 @@
             font-size: 0.65rem;
         }
 
-        /* ===== STORIES (sem scroll lateral, com wrap) ===== */
+        /* ===== STORIES (sem scroll lateral) ===== */
         .stories {
             padding: 6px 0 8px;
             border-bottom: 1px solid rgba(111, 45, 168, 0.2);
@@ -435,7 +434,6 @@
             background: rgba(17, 17, 17, 0.6);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            /* removido overflow-x e white-space */
             display: flex;
             justify-content: center;
         }
@@ -1529,7 +1527,7 @@
         </div>
     </header>
 
-    <!-- ===== STORIES (sem scroll lateral) ===== -->
+    <!-- ===== STORIES ===== -->
     <nav class="stories" id="storiesNav">
         <div class="stories-inner">
             <div class="story-item ativo" data-tab="todas">
@@ -1772,6 +1770,19 @@
         }
 
         // ============================================================
+        //  IDENTIFICADOR ÚNICO DO VISITANTE (para curtidas)
+        // ============================================================
+        function getVisitanteId() {
+            let id = localStorage.getItem('visitante_id');
+            if (!id) {
+                id = 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+                localStorage.setItem('visitante_id', id);
+            }
+            return id;
+        }
+        const USUARIO_ID = getVisitanteId();
+
+        // ============================================================
         //  HELPERS DE VÍDEO (com suporte a TikTok e Instagram)
         // ============================================================
         function extrairIdYoutube(url) {
@@ -1781,14 +1792,12 @@
         }
 
         function extrairIdTikTok(url) {
-            // Exemplo: https://www.tiktok.com/@usuario/video/1234567890123456789
             const regex = /tiktok\.com\/@[^\/]+\/video\/(\d+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
         }
 
         function extrairIdInstagram(url) {
-            // Exemplo: https://www.instagram.com/p/ABC123/
             const regex = /instagram\.com\/p\/([^\/?#]+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
@@ -1825,13 +1834,14 @@
                     embedUrl = `https://www.tiktok.com/embed/v2/${id}`;
                     return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
                 }
-                // fallback
+                // fallback: tentar com a URL original
                 return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
             }
             if (tipo === 'instagram') {
                 const id = extrairIdInstagram(video.url);
                 if (id) {
-                    embedUrl = `https://www.instagram.com/p/${id}/embed/`;
+                    // Usar o embed oficial com parâmetro para carregar
+                    embedUrl = `https://www.instagram.com/p/${id}/embed/?cr=1`;
                     return `<iframe src="${embedUrl}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
                 }
                 return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
@@ -1846,19 +1856,10 @@
         }
 
         // ============================================================
-        //  AJUSTE DO STORIES (agora sem necessidade de top dinâmico,
-        //  pois o menu já está colado, mas mantemos para consistência)
+        //  AJUSTE DO STORIES (sem necessidade de top dinâmico)
         // ============================================================
         function ajustarStories() {
-            // O stories já está colado, mas se houver necessidade de ajuste
-            // podemos simplesmente garantir que ele fique abaixo do header.
-            const header = document.getElementById('header');
-            const stories = document.getElementById('storiesNav');
-            if (header && stories) {
-                // Não é mais necessário definir top, pois o layout já está colado
-                // Removemos o posicionamento sticky que poderia causar gap
-                // Mas mantemos a função para eventuais ajustes.
-            }
+            // Não é mais necessário definir top, pois o layout já está colado.
         }
 
         // ============================================================
@@ -2084,6 +2085,14 @@
             comentarios.textContent = (video.comentarios || []).length;
             btnCurtir.dataset.id = video.id;
 
+            // Verificar se o usuário já curtiu
+            const usuarios = video.usuarios_curtiram || [];
+            if (usuarios.includes(USUARIO_ID)) {
+                btnCurtir.classList.add('curtido');
+            } else {
+                btnCurtir.classList.remove('curtido');
+            }
+
             renderComentarios(video);
 
             overlay.classList.add('aberto');
@@ -2123,18 +2132,32 @@
         }
 
         // ============================================================
-        //  AÇÕES DO MODAL
+        //  AÇÕES DO MODAL (curtir com toggle)
         // ============================================================
         function curtirVideo(id) {
             const video = dados.videos.find(v => v.id === id);
             if (!video) return;
-            video.likes = (video.likes || 0) + 1;
+
+            if (!video.usuarios_curtiram) video.usuarios_curtiram = [];
+            const idx = video.usuarios_curtiram.indexOf(USUARIO_ID);
+
+            if (idx === -1) {
+                // Curtir
+                video.usuarios_curtiram.push(USUARIO_ID);
+                video.likes = (video.likes || 0) + 1;
+                document.getElementById('btnCurtir').classList.add('curtido');
+                toast('❤️ Você curtiu essa fofoca!');
+            } else {
+                // Descurtir
+                video.usuarios_curtiram.splice(idx, 1);
+                video.likes = Math.max(0, (video.likes || 0) - 1);
+                document.getElementById('btnCurtir').classList.remove('curtido');
+                toast('💔 Você descurtiu essa fofoca.');
+            }
+
             saveData(dados);
             const cont = document.getElementById('contCurtidas');
             if (cont) cont.textContent = video.likes;
-            const btn = document.getElementById('btnCurtir');
-            if (btn) btn.classList.add('curtido');
-            toast('❤️ Você curtiu essa fofoca!');
             renderVideos();
             renderDestaque();
         }
@@ -2256,7 +2279,7 @@
                             caches.open('fofoca-v1').then(cache => {
                                 return cache.addAll([
                                     '/',
-                                    '/index.html',
+                                    '/fofocadaminharua.html',
                                     '${dados.logoUrl || 'https://i.ibb.co/rRp2jYtk/logo-fofoca.png'}'
                                 ]);
                             })
@@ -2305,7 +2328,6 @@
             createManifest();
             registerSW();
 
-            // Ajuste de stories (não mais necessário, mas mantido)
             window.addEventListener('resize', ajustarStories);
             window.addEventListener('orientationchange', () => {
                 setTimeout(ajustarStories, 300);
