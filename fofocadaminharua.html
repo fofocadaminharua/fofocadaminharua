@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -1792,13 +1791,15 @@
         }
 
         function extrairIdTikTok(url) {
-            const regex = /tiktok\.com\/@[^\/]+\/video\/(\d+)/;
+            // Captura o ID numérico após /video/ ou /v/
+            const regex = /tiktok\.com\/@[^\/]+\/(?:video|v)\/(\d+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
         }
 
         function extrairIdInstagram(url) {
-            const regex = /instagram\.com\/p\/([^\/?#]+)/;
+            // Captura o ID após /p/ ou /reel/ ou /tv/
+            const regex = /instagram\.com\/(?:p|reel|tv)\/([^\/?#]+)/;
             const match = url.match(regex);
             return match ? match[1] : null;
         }
@@ -1834,13 +1835,13 @@
                     embedUrl = `https://www.tiktok.com/embed/v2/${id}`;
                     return `<iframe src="${embedUrl}" allowfullscreen allow="autoplay; encrypted-media; fullscreen" loading="lazy" title="${video.titulo}"></iframe>`;
                 }
-                // fallback: tentar com a URL original
+                // fallback: usar a URL original
                 return `<iframe src="${video.url}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
             }
             if (tipo === 'instagram') {
                 const id = extrairIdInstagram(video.url);
                 if (id) {
-                    // Usar o embed oficial com parâmetro para carregar
+                    // Embed oficial com parâmetro para carregar o Reels
                     embedUrl = `https://www.instagram.com/p/${id}/embed/?cr=1`;
                     return `<iframe src="${embedUrl}" allowfullscreen loading="lazy" title="${video.titulo}"></iframe>`;
                 }
